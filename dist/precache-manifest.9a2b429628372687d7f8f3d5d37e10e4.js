@@ -20,7 +20,7 @@ self.__precacheManifest = [
     "url": "/img/foto.8b75b393.jpg"
   },
   {
-    "revision": "5a50c6e5319a1a44f6fbcfc12be2e0a6",
+    "revision": "2e7ab1461c0ca074fd7255108a202c29",
     "url": "/index.html"
   },
   {
@@ -44,7 +44,7 @@ self.__precacheManifest = [
     "url": "/img/vue-logo.png"
   },
   {
-    "revision": "3801dba3645336e5ae9d70d6a7f603bb",
+    "revision": "f1b43f34dbeb1639dc8014bb57191c6d",
     "url": "/img/icon2.png"
   },
   {
@@ -52,7 +52,7 @@ self.__precacheManifest = [
     "url": "/robots.txt"
   },
   {
-    "revision": "c464dae140dd233a8f695030ac7ec127",
+    "revision": "1036d7cb197f8e67b2e8d63e4529dc15",
     "url": "/img/icon1.png"
   },
   {

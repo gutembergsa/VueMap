@@ -16,7 +16,7 @@ register(`${process.env.BASE_URL}service-worker.js`, {
     console.log('Content has been cached for offline use.')
   },
   updatefound () {
-    console.log('New content is downloading.')
+    console.log('New content is downloading. ')
   },
   updated () {
     console.log('New content is available; please refresh.')

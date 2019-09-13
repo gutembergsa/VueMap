@@ -14,7 +14,7 @@
                             <br>
                             Olá, seja bem-vindo a uma de minhas aplicações pela internet hehe. Meu nome
                             você já sabe, o que não deve saber é que sou formado em tecnologia mecatrônica,
-                            e venho desde de 2016 me especializando  em internet das coisas e nos conceitos e
+                            e venho desde de 2016 me especializando em internet das coisas e nos conceitos e
                             tecnologias da indústria 4.0, esta aplicação é uma demonstração de meus conhecimentos
                             em desenvolvimento web e programação tão necessárias nessas áreas emergentes :).
                         </p>
@@ -23,47 +23,46 @@
             </article>            
         </div>
         <div id="footerContent2" class="section animated fadeIn">
-                    <div class="content">
-                        <p>
-                            <label class="label fottxt center is-size-4">VueMAP</label>
-                            <br>
-                            Esta é uma aplicação sem fins uteis reais, apenas para fins didáticos, o VueMAP
-                            traz em sua stack tecnologias emergentes e conceitos novos que priorizam a experiência
-                            de usuário, funcionando como um marcador de mapa esta aplicação permite a criação e
-                            gerenciamento de listas de pontos ou rotas que podem ser facilmente visualizados no mapa disponível
-                            logo acima, esta aplicação roda no browser e pode ser instalada sem consumir recursos de seu device
-                            para tornar a aplicação mais rápida e melhorando ainda mais sua experiencia de na utilização do app! Meu intuito
-                            ao desenvolver esta aplicação foi aprender como criar interfaces fluidas e bonitas sem abrir mão
-                            da performance, tão importante nas soluções de embarcados onde o uso de dados deve ser otimizado.
-
-                        </p>
+            <div class="content">
+                <p>
+                    <label class="label fottxt center is-size-4">VueMAP</label>
+                    <br>
+                    Esta é uma aplicação para fins demonstrativos e para fins didáticos, o VueMAP
+                    traz em sua stack tecnologias emergentes e conceitos novos que priorizam a experiência
+                    de usuário, funcionando como um marcador de mapa esta aplicação permite a criação e
+                    gerenciamento de listas de pontos ou rotas que podem ser facilmente visualizados no mapa disponível
+                    logo acima, esta aplicação roda no browser e pode ser instalada sem consumir recursos de seu device
+                    para tornar a aplicação mais rápida e melhorando ainda mais sua experiência na utilização do app! Meu intuito
+                    ao desenvolver esta aplicação foi aprender como criar interfaces fluidas e bonitas sem abrir mão
+                    da performance, tão importante nas soluções de embarcados onde o uso de dados deve ser otimizado.
+                </p>
+            </div>
+            <label class="label fottxt center is-size-4">Stack utilizada</label>
+                
+            <div class="card">
+                <div class="colums">
+                    <div class="column is-paddingless">
+                        <figure class="image is-96x96 center">
+                            <img src="../../public/img/animate-logo.png">
+                        </figure>
                     </div>
-                    <label class="label fottxt center is-size-4">Stack utilizada</label>
-                     
-                    <div class="card">
-                        <div class="colums">
-                            <div class="column is-paddingless">
-                                <figure class="image is-96x96 center">
-                                    <img src="../../public/img/animate-logo.png">
-                                </figure>
-                            </div>
-                            <div class="column is-paddingless">
-                                <figure class="image is-96x96 center">
-                                    <img src="../../public/img/vue-logo.png">
-                                </figure>
-                            </div>
-                            <div class="column is-paddingless space1">
-                                <figure class="image is-96x96 center">
-                                    <img src="../../public/img/bulma-logo.png">
-                                </figure>
-                            </div>
-                            <div class="column is-paddingless space2">
-                                <figure class="image is-96x96 center">
-                                    <img src="../../public/img/indexeddb-logo.png">
-                                </figure>
-                            </div>
-                        </div>
+                    <div class="column is-paddingless">
+                        <figure class="image is-96x96 center">
+                            <img src="../../public/img/vue-logo.png">
+                        </figure>
                     </div>
+                    <div class="column is-paddingless space1">
+                        <figure class="image is-96x96 center">
+                            <img src="../../public/img/bulma-logo.png">
+                        </figure>
+                    </div>
+                    <div class="column is-paddingless space2">
+                        <figure class="image is-96x96 center">
+                            <img src="../../public/img/indexeddb-logo.png">
+                        </figure>
+                    </div>
+                </div>
+            </div>
         </div>
         <div id="footerContent3" class="section animated is-hidden">
             <article class="media">

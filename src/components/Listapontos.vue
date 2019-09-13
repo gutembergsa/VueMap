@@ -1,61 +1,63 @@
 <template>
     <nav class="panel p" id="alvo">
         <div class="container" id="lista">
-        <p class="panel-heading nobotborder">
-            Pontos que você marcou...
-        </p>
-        <ul v-if="this.flag">
-            <li v-for="value in this.values">
-                <a class="panel-block puttopborder" :class="{'change1': value.selected, 'is-active': value.selected, 'change2': !value.selected}">
-                    <article class="media extend ">
-                        <figure class="media-left createat">
-                            <span class="panel-icon" :class="{'has-text-light': value.selected}">
-                                <i class="fas fa-map-marker-alt icon is-medium" aria-hidden="true"></i>
-                            </span>
-                        </figure>
-                        <div class="media-content">
-                            <div class="columns is-mobile">
-                                <div class="column createat2" @click="select(value)">
-                                    <div class="content" id="name">
-                                           <b>{{value.nome}}</b>
+            <p class="panel-heading nobotborder">
+                Pontos que você marcou...
+            </p>
+            <ul v-if="this.flag">
+                <li v-for="value in this.values">
+                    <a class="panel-block puttopborder" :class="{'change1': value.selected, 'is-active': value.selected, 'change2': !value.selected}">
+                        <article class="media extend ">
+                            <figure class="media-left createat">
+                                <span class="panel-icon" :class="{'has-text-light': value.selected}">
+                                    <i class="fas fa-map-marker-alt icon is-medium" aria-hidden="true"></i>
+                                </span>
+                            </figure>
+                            <div class="media-content">
+                                <div class="columns is-mobile">
+                                    <div class="column createat2" @click="select(value)">
+                                        <div class="content" id="name">
+                                            <b>{{value.nome}}</b>
+                                        </div>
+                                        <div class="content" id="latlong">
+                                                {{value.label[0]}}
+                                        </div>
+                                    </div>  
+                                    <div class="column is-narrow createat3">
+                                        <button class="button is-outlined" @click="edit(value)">
+                                            <span class="icon">
+                                                <i class="fas fa-cog"></i>
+                                            </span>
+                                        </button>
+                                        <br>
+                                        <button class="button is-outlined" @click="remove(value)">
+                                            <span class="icon">
+                                                <i class="fas fa-times"></i>
+                                            </span>                            
+                                        </button>
+                                        <br/>
                                     </div>
-                                    <div class="content" id="latlong">
-                                            {{value.label[0]}}
-                                    </div>
-                                </div>  
-                                <div class="column is-narrow createat3">
-                                    <button class="button is-outlined" @click="edit(value)">
-                                        <span class="icon">
-                                            <i class="fas fa-cog"></i>
-                                        </span>
-                                    </button>
-                                    <br>
-                                    <button class="button is-outlined" @click="remove(value)">
-                                        <span class="icon">
-                                            <i class="fas fa-times"></i>
-                                        </span>                            
-                                    </button>
-                                    <br/>
                                 </div>
                             </div>
-                        </div>
-                    </article>
-                </a>                
-            </li>
-        </ul>
-        <div v-else>
-            <p class="panel-heading extend">
-                Você não tem ponto salvos
-            </p>
-        </div>
-        <div class="panel-tabs" @click="reset()">
-            <button id="resetlista1" class="button is-link is-outlined is-fullwidth is-hidden-desktop is-small" >
-                Mantenha pressionado por {{time}} seg para resetar a lista                
-            </button>
-            <button id="resetlista1" class="button is-link is-outlined is-fullwidth is-hidden-touch" >
-                Mantenha pressionado por {{time}} seg para resetar a listaa            
-            </button>
-        </div>
+                        </article>
+                    </a>                
+                </li>
+            </ul>
+            <div v-else>
+                <p class="panel-heading extend">
+                    Você não tem ponto salvos
+                </p>
+            </div>
+            <div class="panel-tabs" @click="reset()">
+                <button id="resetlista1" class="button is-outlined is-fullwidth is-hidden-desktop is-small" :class="{'change1': !flag2, 'resetbutton': flag2}">
+                    <p v-if="!flag2" class="has-text-white">Clique para inicar o reset da lista</p>                
+                    <p v-else class="has-text-white">Resetando em {{time}} seg, clique para cancelar</p>                
+                </button>
+                <button id="resetlista1" class="button is-outlined is-fullwidth is-hidden-touch" :class="{'change1': !flag2, 'resetbutton': flag2}">
+                    <p v-if="!flag2" class="has-text-white">Clique para inicar o reset da lista</p>                
+                    <p v-else class="has-text-white">Resetando em {{time}} seg, clique para cancelar</p>                
+                </button>
+            </div>
         </div>
         <Modal2/>
     </nav>
@@ -77,12 +79,12 @@ export default {
             values: [],
             clicks: [],
             flag: false,
+            flag2: false,
             time: 5
         }
     },
     mounted(){
         this.list();
-        this.reset();
         document.getElementById('save-ponto').addEventListener('click', ()=>{
             this.list();
         })
@@ -164,30 +166,29 @@ export default {
             Modal2.methods.openEditModal();
         },
         reset(){
-            let flag = true;
             let aux = document.getElementById('locate2');
-            document.getElementById('resetlista1').addEventListener('mousedown', ()=> {
-                this.counter();
-                setTimeout(() => {
-                    if (flag) {
-                        aux.classList.remove('has-text-light');
+
+            if (this.flag2) {
+                this.flag2 = false;
+                this.time = 5;
+                clearInterval(count)                
+            }
+            this.flag2 = !this.flag2;
+            let count = setInterval(() => {
+                this.time--;
+                if (this.time < 1) {
+                    if (this.flag2) {
                         aux.classList.add('change2');
+                        aux.classList.remove('change1', 'has-text-light');
                         localStorage.removeItem('selected1'); 
                         Database.methods.clearList('pontos')
                         Notification.methods.notificate('Lista Resetada');
-                        this.list();
-                    }                
-                }, 5000);
-            });
-            document.getElementById('resetlista1').addEventListener('mouseup', () => flag = false);
-        },
-        counter(){
-            let count = setInterval(() => {
-                this.time--;
-                if (this.time < 0) {
+                        this.list();                        
+                    }
+                    this.flag2 = false;
                     this.time = 5;
                     clearInterval(count)
-                }
+                }                
             }, 1000);
         }
     }
@@ -227,5 +228,10 @@ export default {
 }
 .change1:hover{
     background-color:hsl(171, 100%, 41%);
+}
+.resetbutton{
+    background-color: hsl(348, 100%, 61%);
+    transition-duration: 2s;
+    color: aliceblue;
 }
 </style>

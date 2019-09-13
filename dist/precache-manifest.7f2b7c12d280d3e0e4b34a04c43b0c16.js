@@ -4,8 +4,8 @@ self.__precacheManifest = [
     "url": "/img/indexeddb-logo.png"
   },
   {
-    "revision": "0c528a0aee9cd64a294c",
-    "url": "/css/app.7abe64ec.css"
+    "revision": "65d3ac98fb58d14b0ca5",
+    "url": "/css/app.184c9f75.css"
   },
   {
     "revision": "258e85d26a8fd5c7c0f4",
@@ -20,7 +20,7 @@ self.__precacheManifest = [
     "url": "/img/foto.8b75b393.jpg"
   },
   {
-    "revision": "709576fe7a824df506b7183df88b55ce",
+    "revision": "68506bd70b74c1606464f280890af050",
     "url": "/index.html"
   },
   {
@@ -36,8 +36,8 @@ self.__precacheManifest = [
     "url": "/img/foto.jpg"
   },
   {
-    "revision": "0c528a0aee9cd64a294c",
-    "url": "/js/app.4053caff.js"
+    "revision": "65d3ac98fb58d14b0ca5",
+    "url": "/js/app.f64a1435.js"
   },
   {
     "revision": "13b65d7f80746b45e358584cb3b337f8",

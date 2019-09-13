@@ -1,68 +1,70 @@
 <template>
     <nav class="panel p" id="alvo">
         <div class="container" id="lista">
-        <p class="panel-heading nobotborder">
-            Rotas que você marcou...
-        </p>
-        <ul v-if="this.flag">
-            <li v-for="value in this.values" v-bind:value="value">
-                <a class="panel-block puttopborder" :class="{'is-active': value.selected, 'change3': value.selected, 'change2': !value.selected}">
-                    <article class="media extend ">
-                        <div class="media-content">
-                            <div class="columns is-mobile">
-                                <div class="column createat2" @click="select(value)">
-                                    <div class="content createat4" id="name">
-                                           <b>{{value.nome}}</b>
+            <p class="panel-heading nobotborder">
+                Rotas que você marcou...
+            </p>
+            <ul v-if="this.flag">
+                <li v-for="value in this.values" v-bind:value="value">
+                    <a class="panel-block puttopborder" :class="{'is-active': value.selected, 'change3': value.selected, 'change2': !value.selected}">
+                        <article class="media extend ">
+                            <div class="media-content">
+                                <div class="columns is-mobile">
+                                    <div class="column createat2" @click="select(value)">
+                                        <div class="content createat4" id="name">
+                                            <b>{{value.nome}}</b>
+                                        </div>
+                                        <div class="columns is-mobile">
+                                            <div class="column is-paddingless">
+                                                <span class="panel-icon icone"  :class="{'has-text-light': value.selected}">
+                                                    <i class="fas fa-3x fa-route"></i>
+                                                </span>
+                                            </div>
+                                            <div class="column is-three-quarters">
+                                                <div class="content" id="latlong">
+                                                        {{value.label[0][0]}}
+                                                </div>
+                                                <div class="content" id="latlong">
+                                                        {{value.label[1][0]}}
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="columns is-mobile">
-                                        <div class="column is-paddingless">
-                                            <span class="panel-icon icone"  :class="{'has-text-light': value.selected}">
-                                                <i class="fas fa-3x fa-route"></i>
+                                    <div class="column is-narrow createat3">
+                                        <button class="button is-outlined" @click="edit(value)">
+                                            <span class="icon">
+                                                <i class="fas fa-cog"></i>
                                             </span>
-                                        </div>
-                                        <div class="column is-three-quarters">
-                                            <div class="content" id="latlong">
-                                                    {{value.label[0][0]}}
-                                            </div>
-                                            <div class="content" id="latlong">
-                                                    {{value.label[1][0]}}
-                                            </div>
-                                        </div>
+                                        </button>
+                                        <br>
+                                        <button class="button is-outlined" @click="remove(value)">
+                                            <span class="icon">
+                                                <i class="fas fa-times"></i>
+                                            </span>                            
+                                        </button>
+                                        <br/>
                                     </div>
-                                </div>
-                                <div class="column is-narrow createat3">
-                                    <button class="button is-outlined" @click="edit(value)">
-                                        <span class="icon">
-                                            <i class="fas fa-cog"></i>
-                                        </span>
-                                    </button>
-                                    <br>
-                                    <button class="button is-outlined" @click="remove(value)">
-                                        <span class="icon">
-                                            <i class="fas fa-times"></i>
-                                        </span>                            
-                                    </button>
-                                    <br/>
                                 </div>
                             </div>
-                        </div>
-                    </article>
-                </a>                
-            </li>
-        </ul>
-        <div v-else>
-            <p class="panel-heading extend">
-                Você não tem rotas salvas
-            </p>
-        </div>
-        <div class="panel-tabs" @click="reset()">
-            <button id="resetlista2" class="button is-link is-outlined is-fullwidth is-hidden-desktop is-small" >
-                Mantenha pressionado por {{time}} seg para resetar a lista                
-            </button>
-            <button id="resetlista2" class="button is-link is-outlined is-fullwidth is-hidden-touch" >
-                Mantenha pressionado por {{time}} seg para resetar a listaaa                
-            </button>
-        </div>
+                        </article>
+                    </a>                
+                </li>
+            </ul>
+            <div v-else>
+                <p class="panel-heading extend">
+                    Você não tem rotas salvas
+                </p>
+            </div>
+            <div class="panel-tabs" @click="reset()">
+                <button id="resetlista2" class="button is-outlined is-fullwidth is-hidden-desktop is-small" :class="{'change3': !flag2, 'resetbutton': flag2}">
+                    <p v-if="!flag2" class="has-text-white">Clique para inicar o reset da lista</p>                
+                    <p v-else class="has-text-white">Resetando em {{time}} seg, clique para cancelar</p>                
+                </button>
+                <button id="resetlista2" class="button is-outlined is-fullwidth is-hidden-touch" :class="{'change3': !flag2, 'resetbutton': flag2}">
+                    <p v-if="!flag2" class="has-text-white">Clique para inicar o reset da lista</p>                
+                    <p v-else class="has-text-white">Resetando em {{time}} seg, clique para cancelar</p>                
+                </button>
+            </div>
         </div>
         <Modal3/>
     </nav>
@@ -83,12 +85,12 @@ export default {
             values: [],
             clicks: [],
             flag: false,
+            flag2: false,
             time: 5
         }
     },
     mounted(){
         this.list();
-        this.reset();
         document.getElementById('save-rota').addEventListener('click', ()=>{
             this.list();
         })
@@ -172,30 +174,31 @@ export default {
             this.list()
         },
         reset(){
-            let flag = true;
             let aux = document.getElementById('locate3');
-            document.getElementById('resetlista2').addEventListener('mousedown', ()=> {
-                this.counter();
-                setTimeout(() => {
-                    if (flag) {
+
+            if (this.flag2) {
+                this.flag2 = false;
+                this.time = 5;
+                clearInterval(count)                
+            }
+            
+            this.flag2 = !this.flag2;
+            
+            let count = setInterval(() => {
+                this.time--;
+                if (this.time < 1) {
+                    if (this.flag2) {
                         aux.classList.add('change2');
                         aux.classList.remove('change3', 'has-text-light');
                         localStorage.removeItem('selected2'); 
-                        Database.methods.clearList('rotas');
+                        Database.methods.clearList('rotas')
                         Notification.methods.notificate('Lista Resetada');
-                        this.list();
-                    }                
-                }, 5000);
-            });
-            document.getElementById('resetlista2').addEventListener('mouseup', () => flag = false);
-        },
-        counter(){
-            let count = setInterval(() => {
-                this.time--;
-                if (this.time < 0) {
+                        this.list();                        
+                    }
+                    this.flag2 = false;
                     this.time = 5;
                     clearInterval(count)
-                }
+                }                
             }, 1000);
         }
     }
@@ -236,5 +239,10 @@ export default {
 }
 .change3:hover{
     background-color:hsl(204, 86%, 53%);
+}
+.resetbutton{
+    background-color: hsl(348, 100%, 61%);
+    transition-duration: 2s;
+    color: aliceblue;
 }
 </style>

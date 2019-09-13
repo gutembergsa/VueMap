@@ -1,28 +1,43 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div>
+    <Database/>
+    <Navbar class="is-marginless"/>
+    <addHome/>
+    <Buttonbox/>
+    <Notification/>
+    <Article/>
+    <Footer/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Navbar from './components/Navbar';
+import Article from './components/Article';
+import Buttonbox from './components/Buttonbox';
+import Notification from './components/Notification';
+import addHome from './components/addHome';
+import Footer from './components/Footer';
+import Database from './components/Database';
+import { setTimeout } from 'timers';
 
 export default {
   name: 'app',
-  components: {
-    HelloWorld
+  mounted(){
+  },
+  components:{
+    Navbar,
+    Notification,
+    Buttonbox,
+    addHome,
+    Article,
+    Footer,
+    Database
   }
 }
 </script>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+<style>            
+.center {
+  width: auto;
 }
 </style>

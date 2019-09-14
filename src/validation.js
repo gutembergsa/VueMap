@@ -6,7 +6,8 @@ export default {
         return true;
     },
     checkEmpty2: object  => {
-        if (object.nome === '' || object.label[0] === undefined || object.partida === undefined || object.chegada === undefined) {
+        console.log(object)
+        if (object.nome === '' || object.label[0] === undefined || object.partida === [] || object.chegada === []) {
             return false
         }
         return true;

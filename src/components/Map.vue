@@ -68,7 +68,6 @@ export default {
             let i = 0;
             let aux1 = document.getElementById('locate3');
             if(pos){
-                label:
                 this.route = L.Routing.control({
                     waypoints: [
                         L.latLng(pos.partida[0][0], pos.partida[0][1]),
@@ -78,14 +77,16 @@ export default {
                     draggableWaypoints:false,
                     routeWhileDragging: false,
                     show: false,
+                    language: 'pt-BR'
                 });
                 this.route.addTo(this.map);
+                
 
-                this.route.on('routesfound', ()=>{
+                this.route.on('routesfound', event=>{
+                    console.log(event);
                     this.isLoading = false;
                 })
                 this.route.on('routingerror', ev =>{
-                    ev.preventDefault;
                     let aux2 = setTimeout(() => {
                         if(i === 15){
                             let aux3 = JSON.parse(localStorage.selected2)
@@ -111,6 +112,10 @@ export default {
                         }
                     }, 1000);
                 }, {passive: true});
+                
+                this.route.on('waypointgeocoded' ,event => {
+                    console.log(event)
+                }) 
                 aux1.addEventListener('click', ()=> this.map.setView(L.latLng(pos.partida[0][0], pos.partida[0][1]), 14));                                    
             }
             else{

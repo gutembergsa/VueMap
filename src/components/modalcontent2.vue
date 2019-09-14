@@ -82,7 +82,6 @@ export default {
                 Notification.methods.notificate('Ponto foi salvo');
                 
                 this.$emit('closeEvt');
-                this.autocomplete.placeholder = 'Pesquise um local';
                 this.field = 'Adicione um ponto';
                 this.name = '';
             }

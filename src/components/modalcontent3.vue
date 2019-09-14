@@ -7,31 +7,33 @@
         </span>
     </div>
     <div class="column" id="article">
-        <form class="article animated" id="menu-rota">
-            <label id class="label has-text-left is-size-6" v-if="flag">Escolha o nome da rota</label>
-            <label id class="label has-text-left is-size-6" v-else>Adicione o ponto de chegada</label>
-            <br>
-            <div class="field" v-if="flag">
+        <div class="article animated" id="menu-rota">
+            <label class="label has-text-left is-size-6">{{field}}</label>
+            <div class="field">
+                <label class="label has-text-left is-size-6">Escolha um nome para a rota</label>
                 <div class="control has-icons-left has-icons-right">
-                    <input class="input" v-model="name" type="text">
+                    <input class="input" v-model="name" type="text" placeholder="Qual o nome da rota">
+                </div>
+            </div>
+            <br>
+            <div class="field">
+                <label class="label has-text-left is-size-6">Defina o ponto de partida</label>
+                <div class="control has-icons-left has-icons-right">
+                    <autocomplete :search="search1" default-value="" placeholder="Partida"></autocomplete>
                 </div>
             </div>
             <div class="field">
-                <label class="label has-text-left is-size-6" v-if="flag">Pesquise um ponto de partida</label>
-                <div class="control has-icons-left has-icons-right" v-if="flag">
-                    <autocomplete :search="search" id="autocomplete2" default-value="" auto-complete auto-select=false></autocomplete>
-                </div>
-                <div class="control has-icons-left has-icons-right" v-else>
-                    <autocomplete :search="search" default-value="" id="autocomplete2"></autocomplete>
+                <label class="label has-text-left is-size-6">Defina o ponto de chegada</label>
+                <div class="control has-icons-left has-icons-right">
+                    <autocomplete :search="search2" default-value="" placeholder="Chegada"></autocomplete>
                 </div>
             </div>
-            <div class="field  is-fullwidth">
-                <div class="control has-text-centered" id="save-rota">
-                    <button class="button form1button is-small is-info" v-if="flag" @click="pass">{{txt1}}</button>
-                    <button class="button space3 form1button is-info" v-else @click="save">{{txt2}}</button>
+            <div class="field space2">
+                <div class="control has-text-centered">
+                    <button type="submit" class="button form1button is-info" id="save-rota" @click="save">Atualizar</button>
                 </div>
             </div>
-        </form>
+        </div>
     </div>
 </div>
 </template>
@@ -68,34 +70,18 @@ export default {
         this.modalContent3 = document.getElementById('modal-content3');
     },
     methods:{
-        async search(event){
+        async search1(event){
             let aux = await this.provider.search({ query: event ? event : ''}); 
-            if (this.flag) {
-                this.label[0] = aux.map(value => value.label);
-                this.partida = aux.map(value => value.bounds);
-                return this.label[0];                
-            }
-            else{
-                this.label[1] = aux.map(value => value.label);
-                this.chegada = aux.map(value => value.bounds);
-                return this.label[1];                
-            }                
+            this.label[0] = aux.map(value => value.label);
+            this.partida = aux.map(value => value.bounds);
+            return this.label[0];                
         },
-        pass(event){
-            event.preventDefault();
-            console.log(this.partida);
-            if (this.name === '' || this.partida.length < 1) {
-                Notification.methods.notificate('Preencha todos os campos');
-                
-            } else {
-                this.article.classList.remove('fadeIn');
-                this.article.classList.add('fadeOut', 'hidden');
-                this.flag = false;
-                this.article.txt1 = "Adicione o ponto de chegada"
-                this.article.classList.remove('fadeOut', 'hidden');
-                this.article.classList.add('fadeIn');                  
-            } 
-         },
+        async search2(event){
+            let aux = await this.provider.search({ query: event ? event : ''}); 
+            this.label[1] = aux.map(value => value.label);
+            this.chegada = aux.map(value => value.bounds);
+            return this.label[1];                
+        },
         save(event){
             event.preventDefault();
             let aux = {
@@ -112,7 +98,6 @@ export default {
                 Notification.methods.notificate('Rota foi salva');          
                 Database.methods.addItem('rotas', [aux]);
                 this.$emit('closeEvt');
-                this.flag = true;
                 this.name = '';
             }
         },
@@ -140,13 +125,18 @@ export default {
 }
 .form1{
     width: 270px;
-    height: 320px;
+    height: 420px;
 }   
 .space1{
     margin-top: 35px;
 }
 .space2{
     margin-top: 20px;
+}
+
+.form1button{
+    width: 170px;
+    height: 40px;
 }
 .space3{
     margin-top: 38px;
@@ -157,5 +147,8 @@ export default {
 }
 .hidden{
     display: none;
+}
+#article{
+    height: 500px;
 }
 </style>

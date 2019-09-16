@@ -14,6 +14,7 @@
                 </span>
             </button>
         </div>     
+        <label class="label"> teste de localização real-time: </label>{{this.localtionPos}}
     </div>
 </template>
 
@@ -37,6 +38,8 @@ export default {
             tileLayer: null,
             flag: true,
             route: null,
+            routeInstructions: null,
+            localtionPos: [],
             marker: null,
             selectedPoint: localStorage.selected1 ? JSON.parse(localStorage.selected1) : null,
             selectedRout: localStorage.selected2 ? JSON.parse(localStorage.selected2) : null,
@@ -46,13 +49,25 @@ export default {
     },
     mounted() {
         this.map = L.map('mapid').locate({setView: true, maxZoom: 20});
+
+        const watchID = navigator.geolocation.watchPosition(position=> {
+            console.log(position);
+            this.localtionPos = [position.coords. latitude, position.coords.longitude]
+        });
+        
+        document.getElementById('locate1').addEventListener('click', event => {
+            this.map.locate({setView: true, maxZoom: 15});
+        });
+        
+        //this.map.on('locationfound', ()=> this.localtionPos = this.map._lastCenter);
+        //this.map.on('zoomend', ()=> this.localtionPos = this.map._lastCenter);
+
         this.tileLayer = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
             maxZoom: 18,
             id: 'mapbox.streets',
             accessToken: 'pk.eyJ1IjoiZ3V0ZW1iZXJnc2EiLCJhIjoiY2p3ODlkb296MGtpczQzbG10cXI4dndzeiJ9.o8N3X4TgGza8XchnJ4RsKw'
         }).addTo(this.map);
-        document.getElementById('locate1').addEventListener('click', ()=> this.map.locate({setView: true, maxZoom: 15}));
         if (this.selectedPoint) {
             this.createMarker(this.selectedPoint.lat[1]);          
         }
@@ -82,10 +97,12 @@ export default {
                 this.route.addTo(this.map);
                 
 
-                this.route.on('routesfound', event=>{
-                    console.log(event);
+                this.route.on('routesfound', event =>{
+                    this.routeInstructions = event.routes;
                     this.isLoading = false;
-                })
+                    console.log(this.routeInstructions);
+                });
+
                 this.route.on('routingerror', ev =>{
                     let aux2 = setTimeout(() => {
                         if(i === 15){
@@ -116,7 +133,7 @@ export default {
                 this.route.on('waypointgeocoded' ,event => {
                     console.log(event)
                 }) 
-                aux1.addEventListener('click', ()=> this.map.setView(L.latLng(pos.partida[0][0], pos.partida[0][1]), 14));                                    
+                //aux1.addEventListener('click', ()=> console.log(this.map.setView(L.latLng(pos.partida[0][0], pos.partida[0][1]), 14)));                                    
             }
             else{
                 this.flag = true
@@ -133,6 +150,9 @@ export default {
             else{
                 this.map.removeLayer(this.marker)
             }
+        },
+        Routing(){
+            
         }
     }
 }

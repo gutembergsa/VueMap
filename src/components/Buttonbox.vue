@@ -1,5 +1,6 @@
 <template>
     <div class="section has-background-light has-text-centered space">
+        <Modal/>
         <div class="columns is-mobile">
             <div class="column is-paddingless">
                 <button class="button is-large">
@@ -25,7 +26,12 @@
                 </button>
             </div>
         </div>
-        <Modal/>
+        <div class="section card container">
+            <label class="label is-size-4">
+                Siga oeste em Avenida Presidente Castelo Branco
+            </label>
+        </div>
+
     </div>
 </template>
 

@@ -55,13 +55,11 @@ export default {
             this.localtionPos = [position.coords. latitude, position.coords.longitude]
             this.createMarker(this.localtionPos);
         });
-        
+
         document.getElementById('locate1').addEventListener('click', event => {
-            this.map.locate({setView: true, maxZoom: 15});
+            this.map.setView(this.localtionPos, 15);
         });
-        
-        //this.map.on('locationfound', ()=> this.localtionPos = this.map._lastCenter);
-        //this.map.on('zoomend', ()=> this.localtionPos = this.map._lastCenter);
+
 
         this.tileLayer = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -143,13 +141,15 @@ export default {
         },
         createMarker(pos){
             if (pos) {
-                this.marker = L.marker([pos[0], pos[1]], {title: this.selectedPoint.label})
-                                .bindPopup(`<b>${this.selectedPoint.nome}</b>`)
+                this.marker = L.marker([pos[0], pos[1]], {title: 'teste geo'})
+                                .bindPopup(`<b>'teste geo'</b>`)
                                 .addTo(this.map);
                 document.getElementById('locate2').addEventListener('click', ()=> this.map.setView(L.latLng(pos[0], pos[1]), 14));                
             }
             else{
-                this.map.removeLayer(this.marker)
+                if (this.marker) {
+                    this.map.removeLayer(this.marker)                
+                }
             }
         },
         Routing(){

@@ -51,8 +51,9 @@ export default {
         this.map = L.map('mapid').locate({setView: true, maxZoom: 20});
 
         const watchID = navigator.geolocation.watchPosition(position=> {
-            console.log(position);
+            this.createMarker();
             this.localtionPos = [position.coords. latitude, position.coords.longitude]
+            this.createMarker(this.localtionPos);
         });
         
         document.getElementById('locate1').addEventListener('click', event => {

@@ -48,12 +48,12 @@ self.__precacheManifest = [
     "url": "/img/icon2.png"
   },
   {
-    "revision": "1036d7cb197f8e67b2e8d63e4529dc15",
-    "url": "/img/icon1.png"
-  },
-  {
     "revision": "b6216d61c03e6ce0c9aea6ca7808f7ca",
     "url": "/robots.txt"
+  },
+  {
+    "revision": "1036d7cb197f8e67b2e8d63e4529dc15",
+    "url": "/img/icon1.png"
   },
   {
     "revision": "cfbafef9cb50c3597cf9387610bad295",

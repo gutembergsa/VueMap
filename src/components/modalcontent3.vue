@@ -42,7 +42,7 @@
 import Autocomplete from '@trevoreyre/autocomplete-vue'
 import '@trevoreyre/autocomplete-vue/dist/style.css'
 import validation from '../validation.js';
-import { EsriProvider } from 'leaflet-geosearch';
+import { BingProvider} from 'leaflet-geosearch';
 import Notification from './Notification';
 import Database from './Database';
 
@@ -56,7 +56,7 @@ export default {
         return{
             txt1: 'Adicione o ponto de partida',
             txt2: 'Criar rota',
-            provider: new EsriProvider(),
+            provider: new BingProvider({ params: { key: 'AghuzeeA1vtDHzQVX7hOoRWJ56ASwXHZ5yQi3AR_M3p1WED9B21cJ8RA5PuIm5Cy'}}),
             name: '',   
             partida:[],
             chegada: [],

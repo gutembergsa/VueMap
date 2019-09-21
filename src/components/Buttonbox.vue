@@ -26,9 +26,9 @@
                 </button>
             </div>
         </div>
-        <div class="section card container">
-            <label class="label is-size-4">
-                Siga oeste em Avenida Presidente Castelo Branco
+        <div class="section card animated is-hidden" id='instructions'>
+            <label class="label is-size-4 animated">
+                {{text}}
             </label>
         </div>
 
@@ -47,13 +47,15 @@ export default {
     data(){
         return{
             flag1: null,
-            flag2: null
+            flag2: false,
+            text: ``,
         }
     },
     mounted(){
         Modal.methods.openModal()
         this.setFlag1();
         this.setFlag2();
+        this.changeText();
     },
     methods:{
         setFlag1(){
@@ -65,8 +67,11 @@ export default {
         setFlag2(){
             if (localStorage.selected2) {
                 let aux = JSON.parse(localStorage.selected2);
-                this.flag2 = aux.selected;                
+                this.flag2 = aux.selected;    
             }
+        },
+        changeText(){
+            setInterval(() => this.text = localStorage.instructions, 2000);
         }
     }
 }
@@ -83,6 +88,14 @@ export default {
 </style>
 
 <style>
+.hide{
+    opacity: 0;
+    transition: opacity 2s;
+}
+.show{
+    opacity: 1;
+    transition: opacity, 2s;
+}
 .change1{
     background-color:hsl(171, 100%, 41%);
     transition-duration: 3s;

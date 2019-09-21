@@ -14,7 +14,6 @@
                 </span>
             </button>
         </div>     
-        <label class="label"> teste de localização real-time: </label>{{this.localtionPos}}
     </div>
 </template>
 
@@ -23,9 +22,11 @@ import L from 'leaflet';
 import Database from './Database';
 import Notification from './Notification';
 import Routing from 'leaflet-routing-machine';
+import Geo from 'leaflet-geometryutil';
 import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
 import { clearInterval, setTimeout, clearTimeout } from 'timers';
+import { reject } from 'q';
 
 export default {
     name:'maps',
@@ -37,10 +38,13 @@ export default {
             map: null,
             tileLayer: null,
             flag: true,
+            flag2: false,
             route: null,
-            routeInstructions: null,
-            localtionPos: [],
+            routeFound: null,
+            routeInstructions: [],
+            locationPos: [],
             marker: null,
+            locate: null,
             selectedPoint: localStorage.selected1 ? JSON.parse(localStorage.selected1) : null,
             selectedRout: localStorage.selected2 ? JSON.parse(localStorage.selected2) : null,
             isLoading: true,
@@ -48,18 +52,19 @@ export default {
         }
     },
     mounted() {
-        this.map = L.map('mapid').locate({setView: true, maxZoom: 20});
-
-        const watchID = navigator.geolocation.watchPosition(position=> {
-            this.createMarker();
-            this.localtionPos = [position.coords. latitude, position.coords.longitude]
-            this.createMarker(this.localtionPos);
+        this.map = L.map('mapid').setView(([-23.2194511,-45.7856752]), 6);
+        navigator.geolocation.watchPosition(position => {
+            alert(position.coords.latitude + ' ' + position.coords.longitude);
+            this.locateMaker(position)
+            this.locationPos = [position.coords.latitude, position.coords.longitude]
+            document.getElementById('locate1').addEventListener('click', ()=> this.map.setView(L.latLng(position.coords.latitude, position.coords.longitude), 14));                                
+            if (this.routeFound.length) {
+                this.isPointOnLine(this.locationPos, this.routeFound[0])
+                    .then(result => localStorage.instructions = result)
+                    .catch(result => console.log('erro',result))                
+            }
         });
-
-        document.getElementById('locate1').addEventListener('click', event => {
-            this.map.setView(this.localtionPos, 15);
-        });
-
+        this.initInstructions();
 
         this.tileLayer = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -67,20 +72,32 @@ export default {
             id: 'mapbox.streets',
             accessToken: 'pk.eyJ1IjoiZ3V0ZW1iZXJnc2EiLCJhIjoiY2p3ODlkb296MGtpczQzbG10cXI4dndzeiJ9.o8N3X4TgGza8XchnJ4RsKw'
         }).addTo(this.map);
-        if (this.selectedPoint) {
-            this.createMarker(this.selectedPoint.lat[1]);          
-        }
-        if (this.selectedRout) {
-            this.createRoute(this.selectedRout);          
-        }
-        else{
-            this.isLoading = false;            
-        }
+        if (this.selectedPoint) this.createMarker(this.selectedPoint);          
+        
+        if (this.selectedRout) this.createRoute(this.selectedRout);          
+        else this.isLoading = false;            
     },    
     methods:{
+        initInstructions(){
+            let instructions = document.getElementById('instructions');
+            if (!localStorage.selected2) {
+                instructions.classList.remove('show');
+                instructions.classList.add('hide');
+                setTimeout(() => {
+                    instructions.classList.add('is-hidden');
+                }, 100);
+            } else {                
+                instructions.classList.remove('hide');
+                setTimeout(() => {
+                    instructions.classList.remove('is-hidden');
+                    instructions.classList.add('show');
+                }, 100);
+            }
+        },
         createRoute(pos){
             let i = 0;
             let aux1 = document.getElementById('locate3');
+            aux1.addEventListener('click', ()=> this.map.setView(L.latLng(pos.partida[0][0], pos.chegada[0][1]), 13));                                
             if(pos){
                 this.route = L.Routing.control({
                     waypoints: [
@@ -97,14 +114,23 @@ export default {
                 
 
                 this.route.on('routesfound', event =>{
-                    this.routeInstructions = event.routes;
+                    let aux = 0
+                    this.map.locate()                
+                    this.routeFound = event.routes;
+                    event.routes[0].instructions.map(v =>{
+                        this.routeInstructions.push({
+                            index: v.index
+                        })
+                    })
                     this.isLoading = false;
-                    console.log(this.routeInstructions);
+                    this.isPointOnLine(this.locationPos, this.routeFound[0])
+                        .then(result => localStorage.instructions = result)
+                        .catch(result => console.log('erro',result))
                 });
 
                 this.route.on('routingerror', ev =>{
                     let aux2 = setTimeout(() => {
-                        if(i === 15){
+                        if(i === 5){
                             let aux3 = JSON.parse(localStorage.selected2)
                             aux3.selected = false;
                             localStorage.removeItem('selected2');
@@ -115,6 +141,7 @@ export default {
                                                              recomendo atualizar o app e tentar
                                                              novamente se o problema persistir
                                                              recomendo deletar o ponto`, 10000)
+                            this.initInstructions();
                             this.isLoading = false;
                             this.selectedRout = null
                             aux1.classList.remove('change3', 'has-text-light');
@@ -129,22 +156,29 @@ export default {
                     }, 1000);
                 }, {passive: true});
                 
-                this.route.on('waypointgeocoded' ,event => {
-                    console.log(event)
-                }) 
-                //aux1.addEventListener('click', ()=> console.log(this.map.setView(L.latLng(pos.partida[0][0], pos.partida[0][1]), 14)));                                    
             }
             else{
                 this.flag = true
                 this.map.removeLayer(this.route);           
             }
         },
+        locateMaker(pos){
+            this.map.locate()                
+            if (pos) {
+                if (this.locate) {
+                    this.map.removeLayer(this.locate)                
+                }
+                this.locate = L.marker(L.latLng(pos.coords.latitude, pos.coords.longitude), {title: 'Localização'})
+                .bindPopup(`<b>Sua localização</b>`)
+                .addTo(this.map);
+            }
+        },
         createMarker(pos){
             if (pos) {
-                this.marker = L.marker([pos[0], pos[1]], {title: 'teste geo'})
-                                .bindPopup(`<b>'teste geo'</b>`)
-                                .addTo(this.map);
-                document.getElementById('locate2').addEventListener('click', ()=> this.map.setView(L.latLng(pos[0], pos[1]), 14));                
+                document.getElementById('locate2').addEventListener('click', ()=> this.map.setView(L.latLng(pos.lat[0][0], pos.lat[0][1]), 14));                                
+                this.marker = L.marker([pos.lat[0][0], pos.lat[0][1]], {title: 'Ponto'})
+                .bindPopup(`<b>${pos.nome}</b>`)
+                .addTo(this.map);
             }
             else{
                 if (this.marker) {
@@ -152,9 +186,69 @@ export default {
                 }
             }
         },
-        Routing(){
-            
-        }
+        isPointOnLine(position, rota) {
+            if (this.routeFound) {
+                return new Promise((resolve, reject) => {
+                    let flag = false;
+                    let stop = false;
+                    for (var i = 0; i < rota.coordinates.length; i++) {
+                        if (!flag) {
+                            if((rota.coordinates.length - i) === 1) {
+                                let aux = Geo.belongsSegment(
+                                    L.latLng(position[0], position[1]),
+                                    L.latLng(rota.coordinates[i - 1].lat, rota.coordinates[i - 1].lng),
+                                    L.latLng(rota.coordinates[i].lat, rota.coordinates[i].lng), 7);                                
+                                if (aux === true){
+                                    rota.instructions.forEach((v, j, a) =>{
+                                        if (i === v.index) {
+                                            flag = true;
+                                            resolve(v.text);
+                                            return;
+                                        }
+                                    });
+                                    for (let index = i; index < rota.coordinates.length; index++) {
+                                        if(stop) break
+                                        rota.instructions.forEach((v, j, a)=>{
+                                            if (v.index === index) {
+                                                stop = true;
+                                                resolve(v.text);
+                                                return;
+                                            }
+                                        });                                        
+                                    }
+                                }
+                            }
+                            else{
+                                let aux = Geo.belongsSegment(
+                                    L.latLng(position[0], position[1]),
+                                    L.latLng(rota.coordinates[i].lat, rota.coordinates[i].lng),
+                                    L.latLng(rota.coordinates[i + 1].lat, rota.coordinates[i + 1].lng), 14);    
+                                if (aux === true){
+                                    rota.instructions.forEach((v, j, a) =>{
+                                        if (i === v.index) {
+                                            flag = true;
+                                            resolve(v.text);
+                                            return;
+                                        }
+                                    });
+                                    for (let index = i; index < rota.coordinates.length; index++) {
+                                        if(stop) break
+                                        rota.instructions.forEach((v, j, a)=>{
+                                            if (v.index === index) {
+                                                stop = true;
+                                                resolve(v.text);
+                                                return;
+                                            }
+                                        });                                        
+                                    }
+                                }
+                            }   
+                        }
+                    }
+                    resolve(rota.instructions[0].text);
+                });                
+            }
+        }              
     }
 }
 </script>

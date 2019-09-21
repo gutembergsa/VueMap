@@ -33,10 +33,11 @@
 <script>
 // import
 import Autocomplete from '@trevoreyre/autocomplete-vue';
+
 import Notification from './Notification';
 import validation from '../validation.js';
 import Database from './Database';
-import { EsriProvider } from 'leaflet-geosearch';
+import { BingProvider} from 'leaflet-geosearch';
 import '@trevoreyre/autocomplete-vue/dist/style.css';
 
 export default {
@@ -52,7 +53,7 @@ export default {
     },
     data(){
         return {
-            provider: new EsriProvider(),
+            provider: new BingProvider({ params: { key: 'AghuzeeA1vtDHzQVX7hOoRWJ56ASwXHZ5yQi3AR_M3p1WED9B21cJ8RA5PuIm5Cy'}}),
             name: '',   
             local: [],
             label: [],

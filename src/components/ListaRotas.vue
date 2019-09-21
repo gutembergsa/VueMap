@@ -104,12 +104,19 @@ export default {
     methods:{
         select(value){
             let aux = document.getElementById('locate3');
+            let instructions = document.getElementById('instructions');
             this.reselect()
             if (value.selected) {
                 aux.classList.add('change2');
                 aux.classList.remove('change3', 'has-text-light');
                 value.selected = false;
                 localStorage.removeItem('selected2'); 
+                localStorage.removeItem('instructions'); 
+                instructions.classList.add('hide');
+                setTimeout(() => {
+                    instructions.classList.remove('show');
+                    instructions.classList.add('is-hidden');
+                }, 100);
             } else {
                 aux.classList.add('change3', 'has-text-light');
                 aux.classList.remove('change2');
@@ -155,6 +162,7 @@ export default {
                 aux.classList.add('change2');
                 aux.classList.remove('change3', 'has-text-light');
                 localStorage.removeItem('selected2'); 
+                localStorage.removeItem('instructions'); 
             }
             Database.methods.removeItem('rotas', value.label);
             Notification.methods.notificate('Rota deletada');
@@ -191,6 +199,7 @@ export default {
                         aux.classList.add('change2');
                         aux.classList.remove('change3', 'has-text-light');
                         localStorage.removeItem('selected2'); 
+                        localStorage.removeItem('instructions'); 
                         Database.methods.clearList('rotas')
                         Notification.methods.notificate('Lista Resetada');
                         this.list();                        

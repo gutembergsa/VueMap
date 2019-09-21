@@ -54,7 +54,6 @@ export default {
     mounted() {
         this.map = L.map('mapid').setView(([-23.2194511,-45.7856752]), 6);
         navigator.geolocation.watchPosition(position => {
-            alert(position.coords.latitude + ' ' + position.coords.longitude);
             this.locateMaker(position)
             this.locationPos = [position.coords.latitude, position.coords.longitude]
             document.getElementById('locate1').addEventListener('click', ()=> this.map.setView(L.latLng(position.coords.latitude, position.coords.longitude), 14));                                
@@ -255,7 +254,7 @@ export default {
 
 <style scoped>
 .mapid {
-    height: 300px;
+    height: 350px;
     margin-top: .2%;
     z-index: 1;
     display: flex;
@@ -263,7 +262,7 @@ export default {
 
 .map-wrapper {
     width: 100%;
-    height: 300px;
+    height: 350px;
     position: relative;
 }
 .leaflet-control-container .leaflet-routing-container-hide {

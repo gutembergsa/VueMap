@@ -10,7 +10,7 @@ register(`${process.env.BASE_URL}service-worker.js`, {
     )
   },
   registered () {
-    console.log('Service worker has been registered.')
+    console.log('Service worker has registered.')
   },
   cached () {
     console.log('Content has been cached for offline use.')

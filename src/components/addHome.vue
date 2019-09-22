@@ -3,7 +3,7 @@
         <div id="addHome" class="notification is-dark is-marginless animated" :class="{'is-hidden': !flag, 'fadeIn': flag}">
             <button class="delete" @click="slideClose"></button>
             <div class="section is-size-6">
-                <p>Instale este app para uma experincia mais rapida!</p><button class="button space1" @click="showInstallPromotion">Instalar</button>
+                <p>Instale este app para uma experiência mais rapida!</p><button class="button space1" @click="showInstallPromotion">Instalar</button>
             </div>
         </div>
     </div>

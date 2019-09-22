@@ -67,6 +67,7 @@ export default {
         updateItem(objectStoreName, value){
             this.dbRequest = window.indexedDB.open('vuemap', 2)
             this.dbRequest.onsuccess = function(event) {
+                console.log(value)
                 let getTransaction = this.result
                                         .transaction(objectStoreName, "readwrite")
                                         .objectStore(objectStoreName)

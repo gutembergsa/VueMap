@@ -40,7 +40,7 @@ export default {
             flag: true,
             flag2: false,
             route: null,
-            routeFound: null,
+            routeFound: [],
             routeInstructions: [],
             locationPos: [],
             marker: null,

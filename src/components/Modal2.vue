@@ -17,7 +17,7 @@
                     <br>
                     <div class="field">
                         <div class="control has-icons-left has-icons-right">
-                            <autocomplete :search="search" placeholder="Pesquise um local" id="autocomplete2"></autocomplete>
+                            <autocomplete :search="search" :get-result-value="getResultValue"  placeholder="Pesquise um local" id="autocomplete2"></autocomplete>
                         </div>
                     </div>
                     <div class="field space2">
@@ -53,7 +53,8 @@ export default {
             local: [],
             label: [],
             field: 'Atualize o ponto',
-            value: null
+            value: null,
+            aux: []
         }
     },
     methods:{
@@ -82,10 +83,10 @@ export default {
             this.value = JSON.parse(localStorage.pointValue);
             localStorage.removeItem('pointValue');
             if(this.label.length){
-                Database.methods.removeItem('pontos', [this.value.label[0]])
+                Database.methods.removeItem('pontos', this.value.label)
             }
             let aux = {
-                label: this.label.length ? this.label : this.value.label,
+                label: this.aux.length ? this.aux : this.value.label,
                 nome: this.name ? this.name : this.value.nome,
                 lat: this.local[0] ? this.local[0] : this.value.lat,
                 selected: this.value.selected
@@ -93,15 +94,10 @@ export default {
             if (this.value.selected) {
                 localStorage.selected1 = JSON.stringify(aux);
             }
-            if (!validation.checkEmpty(aux)) {
-                Notification.methods.notificate('Preencha todos os campos');
-            }
-            else{
-                Database.methods.updateItem('pontos', [aux]);
-                Notification.methods.notificate('Ponto foi atualizado');                
-                this.field = 'Atualize o ponto';
-                this.name = '';
-            }
+            Database.methods.updateItem('pontos', [aux]);
+            Notification.methods.notificate('Ponto foi atualizado');                
+            this.field = 'Atualize o ponto';
+            this.name = '';
             this.closingContent();
         },
         closingContent(){
@@ -110,14 +106,20 @@ export default {
             setTimeout(()=>{
                 close.classList.add('hidden');   
             },300);
-        }
+        },
+        getResultValue(result) {
+            console.log(result)
+            this.aux = null
+            this.aux = result;
+            return result;
+        },
     }
 }
 </script>
 
 <style scoped>
 .index{
-    z-index: 2;    
+    z-index: 3;    
 }
 #modal-close{
     margin-top: 50px    

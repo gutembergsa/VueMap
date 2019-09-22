@@ -17,12 +17,12 @@
                     <br>
                     <div class="field">
                         <div class="control has-icons-left has-icons-right">
-                            <autocomplete :search="search1" placeholder="Partida" ></autocomplete>
+                            <autocomplete :search="search1" placeholder="Partida" :get-result-value="getResultValue1"></autocomplete>
                         </div>
                     </div>
                     <div class="field">
                         <div class="control has-icons-left has-icons-right">
-                            <autocomplete :search="search2" placeholder="Chegada" ></autocomplete>
+                            <autocomplete :search="search2" placeholder="Chegada" :get-result-value="getResultValue2"></autocomplete>
                         </div>
                     </div>
                     <div class="field space2">
@@ -60,7 +60,8 @@ export default {
             chegada: [],
             label: ['', ''],
             field: 'Atualize a rota',
-            value: null
+            value: null,
+            aux: []
         }
     },
     methods:{
@@ -94,33 +95,28 @@ export default {
             e.preventDefault();
             this.value = JSON.parse(localStorage.routValue);
             localStorage.removeItem('routValue');
-            if(this.label[0] != '' || this.label[1] != ''){
-                Database.methods.removeItem('rotas', [this.value.label[0], this.value.label[1]])
-                setTimeout(() => {
-                    
-                }, 100);
-                this.value.label[0] = this.label[0] != '' ? this.label[0] : this.value.label[0]   
-                this.value.label[1] = this.label[1] != '' ? this.label[1] : this.value.label[1]  
+            if(this.aux[0] !== undefined || this.aux[1]  !== undefined){
+                Database.methods.removeItem('rotas', this.value.label)
+            }
+            if(this.aux[0] !== undefined || this.aux[1]  !== undefined){
+                Database.methods.removeItem('rotas', [this.value.label[0], this.value.label[1]]);
+                this.value.label[0] = (this.aux[0] !== undefined ? this.aux[0] : this.value.label[0]);  
+                this.value.label[1] = (this.aux[1] !== undefined ? this.aux[1] : this.value.label[1]);
             }
             let aux = {
-                label: this.label.length > 2 ? this.label : this.value.label,
+                label: this.value.label,
                 nome: this.name ? this.name : this.value.nome,
-                partida: this.local[0] ? this.local[0] : this.value.partida,
-                chegada: this.local[1] ? this.local[1] : this.value.chegada,
+                partida: this.local[0] ? this.local[0][0] : this.value.partida,
+                chegada: this.local[1] ? this.local[1][0] : this.value.chegada,
                 selected: this.value.selected
             }
             if (this.value.selected) {
                 localStorage.selected2 = JSON.stringify(aux);
             }
-            if (!validation.checkEmpty2(aux)) {
-                Notification.methods.notificate('Preencha todos os campos');
-            }
-            else{
-                Database.methods.updateItem('rotas', [aux]);
-                Notification.methods.notificate('Rota foi atualizada');                
-                this.field = 'Atualize a rota';
-                this.name = '';
-            }
+            Database.methods.updateItem('rotas', [aux]);
+            Notification.methods.notificate('Rota foi atualizada');                
+            this.field = 'Atualize a rota';
+            this.name = '';
             this.closingContent();
         },
         closingContent(){
@@ -129,7 +125,19 @@ export default {
             setTimeout(()=>{
                 close.classList.add('hidden');   
             },300);
-        }
+        },
+        getResultValue1(result) {
+            console.log(result)
+            this.aux[0] = null
+            this.aux[0] = result;
+            return result;
+        },
+        getResultValue2(result) {
+            console.log(result)
+            this.aux[1] = null
+            this.aux[1] = result;
+            return result;
+        },
     }
 }
 </script>

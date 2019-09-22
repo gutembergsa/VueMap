@@ -22,10 +22,10 @@
                                             </div>
                                             <div class="column is-three-quarters">
                                                 <div class="content" id="latlong">
-                                                        {{value.label[0][0]}}
+                                                        {{value.label[0]}}
                                                 </div>
                                                 <div class="content" id="latlong">
-                                                        {{value.label[1][0]}}
+                                                        {{value.label[1]}}
                                                 </div>
                                             </div>
                                         </div>
@@ -103,6 +103,7 @@ export default {
     },
     methods:{
         select(value){
+            console.log(value)
             let aux = document.getElementById('locate3');
             let instructions = document.getElementById('instructions');
             this.reselect()
@@ -144,7 +145,6 @@ export default {
                                         .getAll();
                 getTransaction.onsuccess = async function(event){
                     value = await JSON.stringify(this.result)
-
                 };
             };
             setTimeout(()=>{
@@ -177,9 +177,9 @@ export default {
                 `, 30000)
                 localStorage.tutorial2 = true;
             }
+            console.log(value)
             localStorage.routValue = JSON.stringify(value); 
             Modal3.methods.openEditModal();
-            this.list()
         },
         reset(){
             let aux = document.getElementById('locate3');

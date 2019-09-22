@@ -8,7 +8,6 @@
     </div>
     <div class="column" id="article">
         <div class="article animated" id="menu-rota">
-            <label class="label has-text-left is-size-6">{{field}}</label>
             <div class="field">
                 <label class="label has-text-left is-size-6">Escolha um nome para a rota</label>
                 <div class="control has-icons-left has-icons-right">
@@ -19,13 +18,13 @@
             <div class="field">
                 <label class="label has-text-left is-size-6">Defina o ponto de partida</label>
                 <div class="control has-icons-left has-icons-right">
-                    <autocomplete :search="search1" default-value="" placeholder="Partida"></autocomplete>
+                    <autocomplete :search="search1" default-value="" :get-result-value="getResultValue1" placeholder="Partida"></autocomplete>
                 </div>
             </div>
             <div class="field">
                 <label class="label has-text-left is-size-6">Defina o ponto de chegada</label>
                 <div class="control has-icons-left has-icons-right">
-                    <autocomplete :search="search2" default-value="" placeholder="Chegada"></autocomplete>
+                    <autocomplete :search="search2" default-value="" :get-result-value="getResultValue2" placeholder="Chegada"></autocomplete>
                 </div>
             </div>
             <div class="field space2">
@@ -62,6 +61,7 @@ export default {
             chegada: [],
             flag: true, 
             label: [],
+            aux: []
         }
     },
     mounted(){
@@ -86,9 +86,9 @@ export default {
             event.preventDefault();
             let aux = {
                 nome: this.name,
-                label: this.label,
-                partida: this.partida,
-                chegada: this.chegada,
+                label: this.aux,
+                partida: this.partida[0],
+                chegada: this.chegada[0],
                 selected: false
             };
             if (!validation.checkEmpty2(aux)) {
@@ -113,7 +113,19 @@ export default {
                 this.modalContent1.classList.add('slideInLeft');
                 this.modalContent1.classList.remove('zoomOutLeft','hidden');
             }, 500);
-        }
+        },
+        getResultValue1(result) {
+            console.log(result)
+            this.aux[0] = null
+            this.aux[0] = result;
+            return result;
+        },
+        getResultValue2(result) {
+            console.log(result)
+            this.aux[1] = null
+            this.aux[1] = result;
+            return result;
+        },
     }
 };
 </script>

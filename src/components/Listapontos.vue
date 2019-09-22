@@ -20,7 +20,7 @@
                                             <b>{{value.nome}}</b>
                                         </div>
                                         <div class="content" id="latlong">
-                                                {{value.label[0]}}
+                                                {{value.label}}
                                         </div>
                                     </div>  
                                     <div class="column is-narrow createat3">
@@ -149,11 +149,12 @@ export default {
                 aux.classList.add('change2');
                 localStorage.removeItem('selected1'); 
             }
-            Database.methods.removeItem('pontos', [value.label[0]]);
+            Database.methods.removeItem('pontos', value.label);
             Notification.methods.notificate('Ponto deletado');
             this.list();
         },
         edit(value){
+            console.log(value)
             if(!localStorage.tutorial1){
                 Notification.methods.notificate(`
                     Dica:

@@ -125,9 +125,12 @@ export default {
                         })
                     })
                     this.isLoading = false;
-                    this.isPointOnLine(this.locationPos, this.routeFound[0])
+                    this.isPointOnLine(this.locationPos, this.routeFound[0], 4)
                         .then(result => localStorage.instructions = result)
-                        .catch(result => console.log('erro',result))
+                        .catch(result => console.log('erro',result));
+                    this.isPointOnLine(this.locationPos, this.routeFound[0], 8)
+                        .then(result => localStorage.instructions = result)
+                        .catch(result => console.log('erro',result));
                 });
 
                 this.route.on('routingerror', ev =>{

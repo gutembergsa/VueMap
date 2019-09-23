@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/precache-manifest.99991c8e8f5950236a07e1d5bf49de7b.js"
+  "/precache-manifest.6b07ecf393564b381d62fb91d09511a3.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "vuemapa"});

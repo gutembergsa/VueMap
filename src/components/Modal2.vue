@@ -17,7 +17,7 @@
                     <br>
                     <div class="field">
                         <div class="control has-icons-left has-icons-right">
-                            <autocomplete :search="search" :get-result-value="getResultValue"  placeholder="Pesquise um local" id="autocomplete2"></autocomplete>
+                            <autocomplete default-value="" :search="search" :get-result-value="getResultValue"  placeholder="Pesquise um local" id="autocomplete2"></autocomplete>
                         </div>
                     </div>
                     <div class="field space2">
@@ -73,10 +73,7 @@ export default {
             },300);
         },
         async search(event){
-            let aux = await this.provider.search({ query: event ? event : 'campos'}); 
-            this.local = aux.map(value => value.bounds);
-            this.label = aux.map(value => value.label);
-            return this.label;
+            return new Promise(resolve => resolve(this.provider.search({ query: event ? event : 'campos'}))).then(result=> result);            
         },
         update(e){
             e.preventDefault()
@@ -107,13 +104,13 @@ export default {
                 close.classList.add('hidden');   
             },300);
         },
-        getResultValue(result) {
-            console.log(result)
-            this.aux = null
-            this.aux = result;
-            return result;
+         getResultValue(result) {
+            this.aux = result.label;
+            this.local = result.bounds;
+            this.label = result.label;
+            return result.label;
         },
-    }
+   }
 }
 </script>
 

@@ -17,7 +17,7 @@
             <div class="field">
                 <div class="control has-icons-left has-icons-right">
                     <label class="label has-text-left is-size-6">Pesquise um endereço</label>
-                    <autocomplete :search="search" :get-result-value="getResultValue" id="autocomplete"></autocomplete>
+                    <autocomplete default-value="" :search="search" :get-result-value="getResultValue" id="autocomplete"></autocomplete>
                 </div>
             </div>
             <div class="field ">
@@ -58,22 +58,17 @@ export default {
             local: [],
             label: [],
             field: 'Escolha o nome do ponto',
-            aux: null
         }
     },
     methods:{
-        async search(event){
-            let aux = await this.provider.search({ query: event ? event : 'campos'}); 
-            this.local = aux.map(value => value.bounds);
-            this.label = aux.map(value => value.label);
-            console.log(this.label)
-            return this.label;
+        search(event){
+            return new Promise(resolve => resolve(this.provider.search({ query: event ? event : 'campos'}))).then(result=> result);            
         },
         save(event){
             event.preventDefault();
 
             let aux = {
-                label: this.aux,
+                label: this.label,
                 nome: this.name,
                 lat: this.local[0],
                 selected: false
@@ -104,10 +99,10 @@ export default {
             this.name = '';
         },
         getResultValue(result) {
-            console.log(result)
-            this.aux = null
-            this.aux = result;
-            return result;
+            this.label = result.label;
+            this.local = result.bounds;
+            this.label = result.label;
+            return result.label;
         },
     }
 };

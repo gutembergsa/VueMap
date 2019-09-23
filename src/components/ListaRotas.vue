@@ -119,6 +119,7 @@ export default {
                     instructions.classList.add('is-hidden');
                 }, 100);
             } else {
+                localStorage.instructions = 'Aguardando a geolocalização...'
                 aux.classList.add('change3', 'has-text-light');
                 aux.classList.remove('change2');
                 value.selected = true;   

@@ -18,10 +18,9 @@ export default {
     methods:{
         addItem(objectStoreName, data = [], value = null){
             this.dbRequest = window.indexedDB.open('vuemap', 2)
+            let self = this
             this.dbRequest.onsuccess = async function(event) {
                 value = this.result.transaction(objectStoreName, "readwrite").objectStore(objectStoreName);
-                value.onsuccess = function(){
-                }
                 for (let i in data) {
                     value.add(data[i]);                                              
                 }
@@ -67,7 +66,6 @@ export default {
         updateItem(objectStoreName, value){
             this.dbRequest = window.indexedDB.open('vuemap', 2)
             this.dbRequest.onsuccess = function(event) {
-                console.log(value)
                 let getTransaction = this.result
                                         .transaction(objectStoreName, "readwrite")
                                         .objectStore(objectStoreName)

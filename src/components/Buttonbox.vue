@@ -27,7 +27,7 @@
             </div>
         </div>
         <div class="section card animated is-hidden" id='instructions'>
-            <label class="label is-size-4 animated">
+            <label v-model="text" class="label is-size-4 animated">
                 {{text}}
             </label>
         </div>
@@ -48,7 +48,7 @@ export default {
         return{
             flag1: null,
             flag2: false,
-            text: ``,
+            text: `Aguardando a geolocalização...`,
         }
     },
     mounted(){
@@ -71,7 +71,13 @@ export default {
             }
         },
         changeText(){
-            setInterval(() => this.text = localStorage.instructions, 2000);
+            setInterval(() => {
+                if (localStorage.instructions) {
+                    this.text = localStorage.instructions                    
+                } else {
+                    this.text = `Aguardando a geolocalização...`                                        
+                }
+            }, 2000);
         }
     }
 }

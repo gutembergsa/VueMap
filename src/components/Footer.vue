@@ -16,7 +16,7 @@
                             você já sabe, o que não deve saber é que sou formado em tecnologia mecatrônica,
                             e venho desde de 2016 me especializando em internet das coisas e nos conceitos e
                             tecnologias da indústria 4.0, esta aplicação é uma demonstração de meus conhecimentos
-                            em desenvolvimento web e programação tão necessárias nessas áreas emergentes :).
+                            em desenvolvimento web e programação tão necessárias nessas áreas emergentes.
                         </p>
                     </div>
                 </div>

@@ -17,12 +17,12 @@
                     <br>
                     <div class="field">
                         <div class="control has-icons-left has-icons-right">
-                            <autocomplete :search="search1" placeholder="Partida" :get-result-value="getResultValue1"></autocomplete>
+                            <autocomplete :search="search" placeholder="Partida" :get-result-value="getResultValue1"></autocomplete>
                         </div>
                     </div>
                     <div class="field">
                         <div class="control has-icons-left has-icons-right">
-                            <autocomplete :search="search2" placeholder="Chegada" :get-result-value="getResultValue2"></autocomplete>
+                            <autocomplete :search="search" placeholder="Chegada" :get-result-value="getResultValue2"></autocomplete>
                         </div>
                     </div>
                     <div class="field space2">
@@ -58,7 +58,7 @@ export default {
             local: [],
             partida: [],
             chegada: [],
-            label: ['', ''],
+            //label: ['', ''],
             field: 'Atualize a rota',
             value: null,
             aux: []
@@ -79,25 +79,13 @@ export default {
                 }
             },300);
         },
-        async search1(event){
-            let aux = await this.provider.search({ query: event ? event : 'campos'}); 
-            this.local[0] = aux.map(value => value.bounds);
-            this.label[0] = aux.map(value => value.label);
-            return this.label[0];
-        },
-        async search2(event){
-            let aux = await this.provider.search({ query: event ? event : 'campos'}); 
-            this.local[1] = aux.map(value => value.bounds);
-            this.label[1] = aux.map(value => value.label);
-            return this.label[1];
+        async search(event){
+            return new Promise(resolve => resolve(this.provider.search({ query: event ? event : 'campos'}))).then(result=> result);            
         },
         update(e){
             e.preventDefault();
             this.value = JSON.parse(localStorage.routValue);
             localStorage.removeItem('routValue');
-            if(this.aux[0] !== undefined || this.aux[1]  !== undefined){
-                Database.methods.removeItem('rotas', this.value.label)
-            }
             if(this.aux[0] !== undefined || this.aux[1]  !== undefined){
                 Database.methods.removeItem('rotas', [this.value.label[0], this.value.label[1]]);
                 this.value.label[0] = (this.aux[0] !== undefined ? this.aux[0] : this.value.label[0]);  
@@ -106,8 +94,8 @@ export default {
             let aux = {
                 label: this.value.label,
                 nome: this.name ? this.name : this.value.nome,
-                partida: this.local[0] ? this.local[0][0] : this.value.partida,
-                chegada: this.local[1] ? this.local[1][0] : this.value.chegada,
+                partida: this.partida.length > 0 ? this.partida : this.value.partida,
+                chegada: this.chegada.length > 0 ? this.chegada : this.value.chegada,
                 selected: this.value.selected
             }
             if (this.value.selected) {
@@ -127,16 +115,16 @@ export default {
             },300);
         },
         getResultValue1(result) {
-            console.log(result)
-            this.aux[0] = null
-            this.aux[0] = result;
-            return result;
+            this.aux[0] = result.label;
+            //this.label[0] = result.label;
+            this.partida = result.bounds;
+            return result.label;                
         },
         getResultValue2(result) {
-            console.log(result)
-            this.aux[1] = null
-            this.aux[1] = result;
-            return result;
+            this.aux[1] = result.label;
+            //this.label[1] = result.label;
+            this.chegada = result.bounds;
+            return result.label;                
         },
     }
 }

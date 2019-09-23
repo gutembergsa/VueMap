@@ -154,7 +154,6 @@ export default {
             this.list();
         },
         edit(value){
-            console.log(value)
             if(!localStorage.tutorial1){
                 Notification.methods.notificate(`
                     Dica:

@@ -58,9 +58,12 @@ export default {
             this.locationPos = [position.coords.latitude, position.coords.longitude]
             document.getElementById('locate1').addEventListener('click', ()=> this.map.setView(L.latLng(position.coords.latitude, position.coords.longitude), 14));                                
             if (this.routeFound.length) {
-                this.isPointOnLine(this.locationPos, this.routeFound[0])
+                this.isPointOnLine(this.locationPos, this.routeFound[0], 4)
                     .then(result => localStorage.instructions = result)
-                    .catch(result => console.log('erro',result))                
+                    .catch(result => console.log('erro',result));               
+                this.isPointOnLine(this.locationPos, this.routeFound[0], 8)
+                    .then(result => localStorage.instructions = result)
+                    .catch(result => console.log('erro',result));              
             }
         });
         this.initInstructions();
@@ -71,8 +74,8 @@ export default {
             id: 'mapbox.streets',
             accessToken: 'pk.eyJ1IjoiZ3V0ZW1iZXJnc2EiLCJhIjoiY2p3ODlkb296MGtpczQzbG10cXI4dndzeiJ9.o8N3X4TgGza8XchnJ4RsKw'
         }).addTo(this.map);
-        if (this.selectedPoint) this.createMarker(this.selectedPoint);          
         
+        if (this.selectedPoint) this.createMarker(this.selectedPoint);              
         if (this.selectedRout) this.createRoute(this.selectedRout);          
         else this.isLoading = false;            
     },    
@@ -96,12 +99,12 @@ export default {
         createRoute(pos){
             let i = 0;
             let aux1 = document.getElementById('locate3');
-            aux1.addEventListener('click', ()=> this.map.setView(L.latLng(pos.partida[0][0], pos.chegada[0][1]), 13));                                
+            aux1.addEventListener('click', ()=> this.map.setView(L.latLng(pos.partida[0], pos.chegada[1]), 13));                                
             if(pos){
                 this.route = L.Routing.control({
                     waypoints: [
-                        L.latLng(pos.partida[0][0], pos.partida[0][1]),
-                        L.latLng(pos.chegada[0][0], pos.chegada[0][1])
+                        L.latLng(pos.partida[0], pos.partida[1]),
+                        L.latLng(pos.chegada[0], pos.chegada[1])
                     ],
                     addWaypoints: false,
                     draggableWaypoints:false,
@@ -134,7 +137,7 @@ export default {
                             aux3.selected = false;
                             localStorage.removeItem('selected2');
                             Notification.methods.notificate(`Ops parece que não é possivel
-                                                             processar a rota que você deseja :C 
+                                                             processar a rota que você deseja 
                                                              estarei desmarcando a rota  para que
                                                              não se repita o inconvênio,
                                                              recomendo atualizar o app e tentar
@@ -173,9 +176,10 @@ export default {
             }
         },
         createMarker(pos){
+            
             if (pos) {
-                document.getElementById('locate2').addEventListener('click', ()=> this.map.setView(L.latLng(pos.lat[0][0], pos.lat[0][1]), 14));                                
-                this.marker = L.marker([pos.lat[0][0], pos.lat[0][1]], {title: 'Ponto'})
+                document.getElementById('locate2').addEventListener('click', ()=> this.map.setView(L.latLng(pos.lat[0], pos.lat[1]), 14));                                
+                this.marker = L.marker([pos.lat[0], pos.lat[1]], {title: 'Ponto'})
                 .bindPopup(`<b>${pos.nome}</b>`)
                 .addTo(this.map);
             }
@@ -185,7 +189,7 @@ export default {
                 }
             }
         },
-        isPointOnLine(position, rota) {
+        isPointOnLine(position, rota, proximity) {
             if (this.routeFound) {
                 return new Promise((resolve, reject) => {
                     let flag = false;
@@ -196,7 +200,7 @@ export default {
                                 let aux = Geo.belongsSegment(
                                     L.latLng(position[0], position[1]),
                                     L.latLng(rota.coordinates[i - 1].lat, rota.coordinates[i - 1].lng),
-                                    L.latLng(rota.coordinates[i].lat, rota.coordinates[i].lng), 7);                                
+                                    L.latLng(rota.coordinates[i].lat, rota.coordinates[i].lng), proximity);                                
                                 if (aux === true){
                                     rota.instructions.forEach((v, j, a) =>{
                                         if (i === v.index) {
@@ -221,7 +225,7 @@ export default {
                                 let aux = Geo.belongsSegment(
                                     L.latLng(position[0], position[1]),
                                     L.latLng(rota.coordinates[i].lat, rota.coordinates[i].lng),
-                                    L.latLng(rota.coordinates[i + 1].lat, rota.coordinates[i + 1].lng), 14);    
+                                    L.latLng(rota.coordinates[i + 1].lat, rota.coordinates[i + 1].lng), proximity);    
                                 if (aux === true){
                                     rota.instructions.forEach((v, j, a) =>{
                                         if (i === v.index) {
@@ -244,10 +248,31 @@ export default {
                             }   
                         }
                     }
-                    resolve(rota.instructions[0].text);
+                    resolve(localStorage.instructions ? localStorage.instructions : rota.instructions[0].text);
                 });                
             }
-        }              
+        },            
+        checkProximity(rota, resolve, aux, stop){
+            if (aux === true){
+                rota.instructions.forEach((v, j, a) =>{
+                    if (i === v.index) {
+                        flag = true;
+                        resolve(v.text);
+                        return;
+                    }
+                });
+                for (let index = i; index < rota.coordinates.length; index++) {
+                    if(stop) break
+                    rota.instructions.forEach((v, j, a)=>{
+                        if (v.index === index) {
+                            stop = true;
+                            resolve(v.text);
+                            return;
+                        }
+                    });                                        
+                }
+            }
+        }            
     }
 }
 </script>

@@ -18,13 +18,13 @@
             <div class="field">
                 <label class="label has-text-left is-size-6">Defina o ponto de partida</label>
                 <div class="control has-icons-left has-icons-right">
-                    <autocomplete :search="search1" default-value="" :get-result-value="getResultValue1" placeholder="Partida"></autocomplete>
+                    <autocomplete :search="search" default-value="" :get-result-value="getResultValue1" placeholder="Partida"></autocomplete>
                 </div>
             </div>
             <div class="field">
                 <label class="label has-text-left is-size-6">Defina o ponto de chegada</label>
                 <div class="control has-icons-left has-icons-right">
-                    <autocomplete :search="search2" default-value="" :get-result-value="getResultValue2" placeholder="Chegada"></autocomplete>
+                    <autocomplete :search="search" default-value="" :get-result-value="getResultValue2" placeholder="Chegada"></autocomplete>
                 </div>
             </div>
             <div class="field space2">
@@ -60,8 +60,8 @@ export default {
             partida:[],
             chegada: [],
             flag: true, 
+            flag2: true, 
             label: [],
-            aux: []
         }
     },
     mounted(){
@@ -70,32 +70,23 @@ export default {
         this.modalContent3 = document.getElementById('modal-content3');
     },
     methods:{
-        async search1(event){
-            let aux = await this.provider.search({ query: event ? event : ''}); 
-            this.label[0] = aux.map(value => value.label);
-            this.partida = aux.map(value => value.bounds);
-            return this.label[0];                
-        },
-        async search2(event){
-            let aux = await this.provider.search({ query: event ? event : ''}); 
-            this.label[1] = aux.map(value => value.label);
-            this.chegada = aux.map(value => value.bounds);
-            return this.label[1];                
+        async search(event){
+            return new Promise(resolve => resolve(this.provider.search({ query: event ? event : 'campos'}))).then(result=> result);            
         },
         save(event){
             event.preventDefault();
             let aux = {
                 nome: this.name,
-                label: this.aux,
-                partida: this.partida[0],
-                chegada: this.chegada[0],
+                label: this.label,
+                partida: this.partida,
+                chegada: this.chegada,
                 selected: false
             };
             if (!validation.checkEmpty2(aux)) {
                 Notification.methods.notificate('Preencha todos os campos');
             }
             else{
-                Notification.methods.notificate('Rota foi salva');          
+                Notification.methods.notificate('Rota foi salva');   
                 Database.methods.addItem('rotas', [aux]);
                 this.$emit('closeEvt');
                 this.name = '';
@@ -115,16 +106,14 @@ export default {
             }, 500);
         },
         getResultValue1(result) {
-            console.log(result)
-            this.aux[0] = null
-            this.aux[0] = result;
-            return result;
+            this.label[0] = result.label;
+            this.partida = result.bounds;
+            return result.label;                
         },
         getResultValue2(result) {
-            console.log(result)
-            this.aux[1] = null
-            this.aux[1] = result;
-            return result;
+            this.label[1] = result.label;
+            this.chegada = result.bounds;
+            return result.label;                
         },
     }
 };

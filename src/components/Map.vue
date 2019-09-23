@@ -58,10 +58,7 @@ export default {
             this.locationPos = [position.coords.latitude, position.coords.longitude]
             document.getElementById('locate1').addEventListener('click', ()=> this.map.setView(L.latLng(position.coords.latitude, position.coords.longitude), 14));                                
             if (this.routeFound.length) {
-                this.isPointOnLine(this.locationPos, this.routeFound[0], 4)
-                    .then(result => localStorage.instructions = result)
-                    .catch(result => console.log('erro',result));               
-                this.isPointOnLine(this.locationPos, this.routeFound[0], 8)
+                this.isPointOnLine(this.locationPos, this.routeFound[0])
                     .then(result => localStorage.instructions = result)
                     .catch(result => console.log('erro',result));              
             }
@@ -107,6 +104,7 @@ export default {
                         L.latLng(pos.chegada[0], pos.chegada[1])
                     ],
                     addWaypoints: false,
+                    pointMarkerStyle:{radius: 5,color: '#444',fillColor: 'white',opacity: 1,fillOpacity: 0.7},
                     draggableWaypoints:false,
                     routeWhileDragging: false,
                     show: false,
@@ -125,12 +123,6 @@ export default {
                         })
                     })
                     this.isLoading = false;
-                    this.isPointOnLine(this.locationPos, this.routeFound[0], 4)
-                        .then(result => localStorage.instructions = result)
-                        .catch(result => console.log('erro',result));
-                    this.isPointOnLine(this.locationPos, this.routeFound[0], 8)
-                        .then(result => localStorage.instructions = result)
-                        .catch(result => console.log('erro',result));
                 });
 
                 this.route.on('routingerror', ev =>{
@@ -192,89 +184,77 @@ export default {
                 }
             }
         },
-        isPointOnLine(position, rota, proximity) {
+        isPointOnLine(position, rota) {
             if (this.routeFound) {
                 return new Promise((resolve, reject) => {
-                    let flag = false;
-                    let stop = false;
-                    for (var i = 0; i < rota.coordinates.length; i++) {
-                        if (!flag) {
-                            if((rota.coordinates.length - i) === 1) {
-                                let aux = Geo.belongsSegment(
-                                    L.latLng(position[0], position[1]),
-                                    L.latLng(rota.coordinates[i - 1].lat, rota.coordinates[i - 1].lng),
-                                    L.latLng(rota.coordinates[i].lat, rota.coordinates[i].lng), proximity);                                
-                                if (aux === true){
-                                    rota.instructions.forEach((v, j, a) =>{
-                                        if (i === v.index) {
-                                            flag = true;
-                                            resolve(v.text);
-                                            return;
-                                        }
-                                    });
-                                    for (let index = i; index < rota.coordinates.length; index++) {
-                                        if(stop) break
-                                        rota.instructions.forEach((v, j, a)=>{
-                                            if (v.index === index) {
-                                                stop = true;
-                                                resolve(v.text);
-                                                return;
-                                            }
-                                        });                                        
-                                    }
-                                }
-                            }
-                            else{
-                                let aux = Geo.belongsSegment(
-                                    L.latLng(position[0], position[1]),
-                                    L.latLng(rota.coordinates[i].lat, rota.coordinates[i].lng),
-                                    L.latLng(rota.coordinates[i + 1].lat, rota.coordinates[i + 1].lng), proximity);    
-                                if (aux === true){
-                                    rota.instructions.forEach((v, j, a) =>{
-                                        if (i === v.index) {
-                                            flag = true;
-                                            resolve(v.text);
-                                            return;
-                                        }
-                                    });
-                                    for (let index = i; index < rota.coordinates.length; index++) {
-                                        if(stop) break
-                                        rota.instructions.forEach((v, j, a)=>{
-                                            if (v.index === index) {
-                                                stop = true;
-                                                resolve(v.text);
-                                                return;
-                                            }
-                                        });                                        
-                                    }
-                                }
-                            }   
-                        }
+                    console.log(rota, position)
+                    this.checkProximity(rota, resolve, position, 4);
+                    if (this.flag2 === true) {
+                        this.checkProximity(rota, resolve, position, 8);                     
                     }
-                    resolve(localStorage.instructions ? localStorage.instructions : rota.instructions[0].text);
+                    resolve(rota.instructions[0].text);
                 });                
             }
         },            
-        checkProximity(rota, resolve, aux, stop){
-            if (aux === true){
-                rota.instructions.forEach((v, j, a) =>{
-                    if (i === v.index) {
-                        flag = true;
-                        resolve(v.text);
-                        return;
-                    }
-                });
-                for (let index = i; index < rota.coordinates.length; index++) {
-                    if(stop) break
-                    rota.instructions.forEach((v, j, a)=>{
-                        if (v.index === index) {
-                            stop = true;
-                            resolve(v.text);
-                            return;
+        checkProximity(rota, resolve, position, proximity){
+            let flag = false;
+            let stop = false;
+            this.flag = false;
+            for (var i = 0; i < rota.coordinates.length; i++) {
+                if (!flag) {
+                    if((rota.coordinates.length - i) === 1) {
+                        let aux = Geo.belongsSegment(
+                            L.latLng(position[0], position[1]),
+                            L.latLng(rota.coordinates[i - 1].lat, rota.coordinates[i - 1].lng),
+                            L.latLng(rota.coordinates[i].lat, rota.coordinates[i].lng), proximity);                                
+                        if (aux === true){
+                            rota.instructions.forEach((v, j, a) =>{
+                                if (i === v.index) {
+                                    flag = true;
+                                    resolve(v.text);
+                                    return;
+                                }
+                            });
+                            for (let index = i; index < rota.coordinates.length; index++) {
+                                if(stop) break
+                                rota.instructions.forEach((v, j, a)=>{
+                                    if (v.index === index) {
+                                        stop = true;
+                                        resolve(v.text);
+                                        return;
+                                    }
+                                });                                        
+                            }
                         }
-                    });                                        
+                    }
+                    else{
+                        let aux = Geo.belongsSegment(
+                            L.latLng(position[0], position[1]),
+                            L.latLng(rota.coordinates[i].lat, rota.coordinates[i].lng),
+                            L.latLng(rota.coordinates[i + 1].lat, rota.coordinates[i + 1].lng), proximity);    
+                        if (aux === true){
+                            rota.instructions.forEach((v, j, a) =>{
+                                if (i === v.index) {
+                                    flag = true;
+                                    resolve(v.text);
+                                    return;
+                                }
+                            });
+                            for (let index = i; index < rota.coordinates.length; index++) {
+                                if(stop) break
+                                rota.instructions.forEach((v, j, a)=>{
+                                    if (v.index === index) {
+                                        stop = true;
+                                        resolve(v.text);
+                                        return;
+                                    }
+                                });                                        
+                            }
+                        }
+                    }   
                 }
             }
+            this.flag2 = true;
         }            
     }
 }

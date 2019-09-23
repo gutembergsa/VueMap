@@ -4,8 +4,8 @@ self.__precacheManifest = [
     "url": "/img/indexeddb-logo.png"
   },
   {
-    "revision": "fc82702f575ecc474b0e",
-    "url": "/css/app.154d0fdc.css"
+    "revision": "216f2a4264232de05029",
+    "url": "/css/app.29ff0453.css"
   },
   {
     "revision": "976fe84682cfac86c452",
@@ -20,7 +20,7 @@ self.__precacheManifest = [
     "url": "/img/foto.8b75b393.jpg"
   },
   {
-    "revision": "299c70acf63e6367d4865a52468acd0e",
+    "revision": "caae25f30804874cb8b887685f16d32c",
     "url": "/index.html"
   },
   {
@@ -36,12 +36,16 @@ self.__precacheManifest = [
     "url": "/img/foto.jpg"
   },
   {
-    "revision": "fc82702f575ecc474b0e",
-    "url": "/js/app.e0cb8f58.js"
+    "revision": "216f2a4264232de05029",
+    "url": "/js/app.1dc0e661.js"
   },
   {
     "revision": "13b65d7f80746b45e358584cb3b337f8",
     "url": "/img/vue-logo.png"
+  },
+  {
+    "revision": "b6216d61c03e6ce0c9aea6ca7808f7ca",
+    "url": "/robots.txt"
   },
   {
     "revision": "f1b43f34dbeb1639dc8014bb57191c6d",
@@ -50,10 +54,6 @@ self.__precacheManifest = [
   {
     "revision": "1036d7cb197f8e67b2e8d63e4529dc15",
     "url": "/img/icon1.png"
-  },
-  {
-    "revision": "b6216d61c03e6ce0c9aea6ca7808f7ca",
-    "url": "/robots.txt"
   },
   {
     "revision": "cfbafef9cb50c3597cf9387610bad295",

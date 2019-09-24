@@ -108,7 +108,10 @@ export default {
                     draggableWaypoints:false,
                     routeWhileDragging: false,
                     show: false,
-                    language: 'pt-BR'
+                    language: 'pt-BR',
+                    totalDistanceRoundingSensitivity: 2,
+                    showAlternatives: false,
+                    waypointMode: 'snap'
                 });
                 this.route.addTo(this.map);
                 

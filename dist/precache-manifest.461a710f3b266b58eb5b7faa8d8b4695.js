@@ -4,8 +4,8 @@ self.__precacheManifest = [
     "url": "/img/indexeddb-logo.png"
   },
   {
-    "revision": "216f2a4264232de05029",
-    "url": "/css/app.29ff0453.css"
+    "revision": "4b9d6f7082f6fc92fab6",
+    "url": "/css/app.f0e38fad.css"
   },
   {
     "revision": "976fe84682cfac86c452",
@@ -20,7 +20,7 @@ self.__precacheManifest = [
     "url": "/img/foto.8b75b393.jpg"
   },
   {
-    "revision": "caae25f30804874cb8b887685f16d32c",
+    "revision": "1f7851c920b6e5ff93e68a0285ab4ba2",
     "url": "/index.html"
   },
   {
@@ -36,20 +36,20 @@ self.__precacheManifest = [
     "url": "/img/foto.jpg"
   },
   {
-    "revision": "216f2a4264232de05029",
-    "url": "/js/app.1dc0e661.js"
+    "revision": "4b9d6f7082f6fc92fab6",
+    "url": "/js/app.b3702fb4.js"
   },
   {
     "revision": "13b65d7f80746b45e358584cb3b337f8",
     "url": "/img/vue-logo.png"
   },
   {
-    "revision": "b6216d61c03e6ce0c9aea6ca7808f7ca",
-    "url": "/robots.txt"
-  },
-  {
     "revision": "f1b43f34dbeb1639dc8014bb57191c6d",
     "url": "/img/icon2.png"
+  },
+  {
+    "revision": "b6216d61c03e6ce0c9aea6ca7808f7ca",
+    "url": "/robots.txt"
   },
   {
     "revision": "1036d7cb197f8e67b2e8d63e4529dc15",

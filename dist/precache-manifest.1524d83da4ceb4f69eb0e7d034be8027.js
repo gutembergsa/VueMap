@@ -4,8 +4,8 @@ self.__precacheManifest = [
     "url": "/img/indexeddb-logo.png"
   },
   {
-    "revision": "4b9d6f7082f6fc92fab6",
-    "url": "/css/app.f0e38fad.css"
+    "revision": "2516a4791e3aaf372db6",
+    "url": "/css/app.b33c6cea.css"
   },
   {
     "revision": "976fe84682cfac86c452",
@@ -20,7 +20,7 @@ self.__precacheManifest = [
     "url": "/img/foto.8b75b393.jpg"
   },
   {
-    "revision": "1f7851c920b6e5ff93e68a0285ab4ba2",
+    "revision": "85891e00c70c3c768a82a06d4e0f1890",
     "url": "/index.html"
   },
   {
@@ -36,16 +36,12 @@ self.__precacheManifest = [
     "url": "/img/foto.jpg"
   },
   {
-    "revision": "4b9d6f7082f6fc92fab6",
-    "url": "/js/app.b3702fb4.js"
+    "revision": "2516a4791e3aaf372db6",
+    "url": "/js/app.6425a513.js"
   },
   {
     "revision": "13b65d7f80746b45e358584cb3b337f8",
     "url": "/img/vue-logo.png"
-  },
-  {
-    "revision": "f1b43f34dbeb1639dc8014bb57191c6d",
-    "url": "/img/icon2.png"
   },
   {
     "revision": "b6216d61c03e6ce0c9aea6ca7808f7ca",
@@ -54,6 +50,10 @@ self.__precacheManifest = [
   {
     "revision": "1036d7cb197f8e67b2e8d63e4529dc15",
     "url": "/img/icon1.png"
+  },
+  {
+    "revision": "f1b43f34dbeb1639dc8014bb57191c6d",
+    "url": "/img/icon2.png"
   },
   {
     "revision": "cfbafef9cb50c3597cf9387610bad295",

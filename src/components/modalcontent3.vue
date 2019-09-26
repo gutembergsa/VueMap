@@ -29,7 +29,7 @@
             </div>
             <div class="field space2">
                 <div class="control has-text-centered">
-                    <button type="submit" class="button form1button is-info" id="save-rota" @click="save">Atualizar</button>
+                    <button type="submit" class="button form1button is-info" id="save-rota" @click="save">Salvar rota</button>
                 </div>
             </div>
         </div>

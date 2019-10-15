@@ -18,6 +18,18 @@
                             tecnologias da indústria 4.0, esta aplicação é uma demonstração de meus conhecimentos
                             em desenvolvimento web e programação tão necessárias nessas áreas emergentes.
                         </p>
+                        <p class="container has-text-centered">
+                            <label class=" label is-size-6 fottxt">Contatos</label>
+                            <span class="icon">
+                                <i class="fas fa-at"></i>
+                            </span>
+                            <span>gutemberg.silvasa@outloook.com</span>
+                            <br>                                             
+                            <span class="icon">
+                                <i class="fab fa-whatsapp"></i>
+                            </span>
+                            <span>(12)996862053</span>                        
+                        </p>
                     </div>
                 </div>
             </article>            
@@ -115,7 +127,7 @@
             <div class="control">
                 <button class="button is-rounded" @click.prevent="switchFooter(2)" :class="{'is-small': !this.flag}">
                     <span class="icon">
-                    <i class="fas fa-copyright"></i>
+                        <i class="fas fa-copyright"></i>
                     </span>
                     <span>Licença</span>                
                 </button>                

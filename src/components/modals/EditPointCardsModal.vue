@@ -17,7 +17,7 @@
                     <br>
                     <div class="field">
                         <div class="control has-icons-left has-icons-right">
-                            <autocomplete default-value="" :search="search" :get-result-value="getResultValue"  placeholder="Pesquise um local" id="autocomplete2"></autocomplete>
+                            <autocomplete default-value="" :search="search" :get-result-value="getSearchResultValue"  placeholder="Pesquise um local" id="autocomplete2"></autocomplete>
                         </div>
                     </div>
                     <div class="field space2">
@@ -35,79 +35,38 @@
 <script>
 import { setTimeout } from 'timers';
 import Autocomplete from '@trevoreyre/autocomplete-vue';
-import Notification from './Notification';
-import validation from '../validation.js';
-import Database from './Database';
-import { BingProvider, EsriProvider} from 'leaflet-geosearch';
+import Notification from '../commons/Notification';
+import validation from '../../validation.js';
+import {dbConn} from '../../Database';
 import '@trevoreyre/autocomplete-vue/dist/style.css';
 
 export default {
-    name: 'Modal2',
+    name: 'EditPointCardsModal',
     components:{
         Autocomplete,
     },
     data(){
         return{
-            provider: new BingProvider({ params: { key: 'AghuzeeA1vtDHzQVX7hOoRWJ56ASwXHZ5yQi3AR_M3p1WED9B21cJ8RA5PuIm5Cy'}}),
             name: '',   
-            local: [],
-            label: [],
             field: 'Atualize o ponto',
-            value: null,
-            aux: []
         }
     },
     methods:{
-        openEditModal(){ 
-            let aux = document.getElementById('modal2');
-            aux.classList.remove('fadeOut');
-            aux.classList.add('is-active', 'fadeIn');
-        },
         closeEditModal(){
-            let close_btn = document.getElementById('modal2');
-            close_btn.classList.add('fadeOut');
-            setTimeout(()=>{
-                if (close_btn) {
-                    close_btn.classList.remove('is-active', 'fadeIn');
-                }
-            },300);
+            this.$store.dispatch('closeEditModal', this.returnById('modal2')) 
         },
         async search(event){
-            return new Promise(resolve => resolve(this.provider.search({ query: event ? event : 'campos'}))).then(result=> result);            
+            return new Promise(resolve => resolve(this.$data.mapProvider.search({ query: event ? event : ''}))).then(result=> result);            
         },
         update(e){
             e.preventDefault()
-            this.value = JSON.parse(localStorage.pointValue);
-            localStorage.removeItem('pointValue');
-            if(this.label.length){
-                Database.methods.removeItem('pontos', this.value.label)
-            }
-            let aux = {
-                label: this.aux.length ? this.aux : this.value.label,
-                nome: this.name ? this.name : this.value.nome,
-                lat: this.local[0] ? this.local[0] : this.value.lat,
-                selected: this.value.selected
-            }
-            if (this.value.selected) {
-                localStorage.selected1 = JSON.stringify(aux);
-            }
-            Database.methods.updateItem('pontos', [aux]);
+            this.$store.dispatch('updateSelectedPointCard', this.name) 
             Notification.methods.notificate('Ponto foi atualizado');                
-            this.field = 'Atualize o ponto';
             this.name = '';
-            this.closingContent();
+            this.$store.dispatch('closeEditModal', this.returnById('modal2'))
         },
-        closingContent(){
-            const close = document.getElementById('modal2');
-            close.classList.add('fadeOut');
-            setTimeout(()=>{
-                close.classList.add('hidden');   
-            },300);
-        },
-         getResultValue(result) {
-            this.aux = result.label;
-            this.local = result.bounds;
-            this.label = result.label;
+        getSearchResultValue(result) {
+            this.$store.commit('getPointUpdateData', result)
             return result.label;
         },
    }

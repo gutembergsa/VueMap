@@ -22,30 +22,13 @@
 <script>
 
 export default {
-    name: 'modalButtons',
-    mounted(){
-        this.modalContent1 = document.getElementById('modal-content1');
-        this.modalContent2 = document.getElementById('modal-content2');
-        this.modalContent3 = document.getElementById('modal-content3');
-    },
+    name: 'ChooseDataModal',
     methods: {
         goLeft(){
-            this.modalContent1.classList.add('zoomOutRight');
-            this.modalContent1.classList.remove('slideInRight', 'slideInLeft');
-            setTimeout(()=>{
-                this.modalContent1.classList.add('hidden');
-                this.modalContent2.classList.remove('hidden', 'slideOutLeft');
-                this.modalContent2.classList.add('slideInLeft');
-            }, 500);
+            this.$store.commit('moveModal', [this.returnById('modal-content1'), this.returnById('modal-content2')])
         },  
         goRight(){
-            this.modalContent1.classList.add('zoomOutLeft');
-            this.modalContent1.classList.remove('slideInLeft','slideInRight');
-            setTimeout(()=>{
-                this.modalContent1.classList.add('hidden');
-                this.modalContent3.classList.remove('hidden', 'slideOutRight');
-                this.modalContent3.classList.add('slideInRight');
-            }, 500);
+            this.$store.commit('moveModal', [this.returnById('modal-content1'), this.returnById('modal-content3')]);
         }   
     }
 }

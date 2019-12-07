@@ -5,7 +5,7 @@
                 Pontos que você marcou...
             </p>
             <ul v-if="this.flag">
-                <li v-for="value in this.values">
+                <li v-for="value in this.values" :key="`${value.label}`">
                     <a class="panel-block puttopborder" :class="{'change1': value.selected, 'is-active': value.selected, 'change2': !value.selected}">
                         <article class="media extend ">
                             <figure class="media-left createat">
@@ -59,25 +59,24 @@
                 </button>
             </div>
         </div>
-        <Modal2/>
+        <EditPointCardsModal/>
     </nav>
 </template>
 
 <script>
-import Notification from './Notification';
-import Database from './Database';
-import Modal2 from './Modal2';
+import Notification from '../commons/Notification';
+import EditPointCardsModal from '../modals/EditPointCardsModal';
+import {dbConn} from '../../Database';
 
 import { setTimeout } from 'timers';
 export default {
     name: 'Listapontos',
     components:{
-        Modal2
+        EditPointCardsModal
     },
     data(){
         return{
             values: [],
-            clicks: [],
             flag: false,
             flag2: false,
             time: 5
@@ -85,71 +84,30 @@ export default {
     },
     mounted(){
         this.list();
-        document.getElementById('save-ponto').addEventListener('click', ()=>{
-            this.list();
-        })
-        document.getElementById('save-ponto2').addEventListener('click', ()=>{
-            this.list();
-        })
-    },
-    props:{
-        value: Object
+        window.teste.$on('updatePointList', () => this.list())
     },
     methods:{
-        select(value){
-            let aux = document.getElementById('locate2');
-            this.reselect()
-            if (value.selected) {
-                aux.classList.add('change2');
-                aux.classList.remove('change1', 'has-text-light');
-                value.selected = false;
-                localStorage.removeItem('selected1'); 
-            } else {
-                aux.classList.add('change1', 'has-text-light');
-                aux.classList.remove('change2');
-                value.selected = true;   
-                localStorage.selected1 = JSON.stringify(value); 
-            }
-            Database.methods.updateItem('pontos', [value]);
-            this.list();
-        },
-        reselect(){
-            if (localStorage.selected1) {
-                let aux = JSON.parse(localStorage.selected1);
-                if (aux || aux.selected === false) {
-                    aux.selected = false;
-                    Database.methods.updateItem('pontos', [aux]);                
-                }                
-            }
-        },
-        list(value = []){
-            let db = window.indexedDB.open('vuemap', 2);
-            db.onsuccess = function(event) {
-                let getTransaction = this.result
-                                        .transaction('pontos', "readwrite")
-                                        .objectStore('pontos')
-                                        .getAll();
-                getTransaction.onsuccess = async function(event){
-                    value = await JSON.stringify(this.result)
-                };
-            };
-            setTimeout(()=>{
-                if(JSON.parse(value).length){
-                    this.flag = true
-                    this.values = JSON.parse(value)
-                }else{
-                    this.flag = false
+        select(value){;
+            dbConn.getSelectedCard('pontos').then(result => {
+                if (result) {
+                    result.selected = false;            
+                    dbConn.updateData(result, 'pontos')                    
                 }
-            }, 500)
+                this.$store.commit('selectPointCard', [this.returnById('locate2'), value])
+                this.list();              
+            })
+        },
+        list(){
+            dbConn.getAllData('pontos').then(result => {
+                if (result.length > 0) {
+                    this.flag = true
+                    this.values = result                    
+                }
+                else this.flag = false
+            })
         },
         remove(value){
-            let aux = document.getElementById('locate2');
-            if (value.selected === true) {
-                aux.classList.remove('has-text-light');
-                aux.classList.add('change2');
-                localStorage.removeItem('selected1'); 
-            }
-            Database.methods.removeItem('pontos', value.label);
+            this.$store.dispatch('removeCard', [this.returnById('locate2'), value])
             Notification.methods.notificate('Ponto deletado');
             this.list();
         },
@@ -162,26 +120,21 @@ export default {
                 `, 30000)
                 localStorage.tutorial1 = true;
             }
-            localStorage.pointValue = JSON.stringify(value);
-            Modal2.methods.openEditModal();
+            this.$store.dispatch('openEditModal', [this.returnById('modal2'), value]) 
         },
         reset(){
-            let aux = document.getElementById('locate2');
-
             if (this.flag2) {
                 this.flag2 = false;
                 this.time = 5;
                 clearInterval(count)                
             }
+
             this.flag2 = !this.flag2;
             let count = setInterval(() => {
                 this.time--;
                 if (this.time < 1) {
                     if (this.flag2) {
-                        aux.classList.add('change2');
-                        aux.classList.remove('change1', 'has-text-light');
-                        localStorage.removeItem('selected1'); 
-                        Database.methods.clearList('pontos')
+                        this.$store.dispatch('clearList', [this.returnById('locate2'), true]) 
                         Notification.methods.notificate('Lista Resetada');
                         this.list();                        
                     }

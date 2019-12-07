@@ -1,5 +1,5 @@
 <template>
-<div class="box form1 is-paddingless nav">
+<div class="box form1 is-paddingless nav" ref="newPointModal">
     <div class="column has-background-primary nav has-text-right">
         <span class="icon" id="backright" @click="goBackRight">
             <i class="fas fa-angle-right"></i>
@@ -32,78 +32,54 @@
 
 <script>
 // import
-import Autocomplete from '@trevoreyre/autocomplete-vue';
+import Autocomplete from '@trevoreyre/autocomplete-vue'
 
-import Notification from './Notification';
-import validation from '../validation.js';
-import Database from './Database';
-import { BingProvider} from 'leaflet-geosearch';
-import '@trevoreyre/autocomplete-vue/dist/style.css';
+import Notification from '../commons/Notification'
+import validation from '../../validation.js'
+import '@trevoreyre/autocomplete-vue/dist/style.css'
+import { dbConn } from '../../Database'
 
 export default {
-    name: 'modalPointForm',
+    name: 'NewPointModal',
     components:{
         Autocomplete,
-        Database,
-    },
-    mounted() {
-        this.modalContent1 = document.getElementById('modal-content1');
-        this.modalContent2 = document.getElementById('modal-content2');
-        this.autocomplete = document.getElementById('autocomplete');
     },
     data(){
         return {
-            provider: new BingProvider({ params: { key: 'AghuzeeA1vtDHzQVX7hOoRWJ56ASwXHZ5yQi3AR_M3p1WED9B21cJ8RA5PuIm5Cy'}}),
             name: '',   
-            local: [],
-            label: [],
             field: 'Escolha o nome do ponto',
         }
     },
     methods:{
-        search(event){
-            return new Promise(resolve => resolve(this.provider.search({ query: event ? event : 'campos'}))).then(result=> result);            
+        async search(event){
+            return new Promise(resolve => resolve(this.$data.mapProvider.search({ query: event ? event : ''})))//.then(result=> result)            
         },
         save(event){
-            event.preventDefault();
-
+            event.preventDefault()
             let aux = {
-                label: this.label,
+                label: this.$store.state.dataToEditPoint.label,
                 nome: this.name,
-                lat: this.local[0],
+                lat: this.$store.state.dataToEditPoint.bounds[1],
                 selected: false
             }
             if (!validation.checkEmpty(aux)) {
-                Notification.methods.notificate('Preencha todos os campos');
+                Notification.methods.notificate('Preencha todos os campos')
             }
             else{
-                Database.methods.addItem('pontos', [aux]);
-                Notification.methods.notificate('Ponto foi salvo');
-                
-                this.$emit('closeEvt');
-                this.field = 'Adicione um ponto';
-                this.name = '';
+                dbConn.addData(aux, 'pontos')
+                Notification.methods.notificate('Ponto foi salvo')
+                this.name = ''
+                this.$emit('closeEvt')
+                window.teste.$emit('updatePointList')
             }
         },
-        resetMenu(){
-            this.name = '';
-            this.txt1 = "Adicione o ponto de partida";
-        },
         goBackRight(){
-            this.modalContent2.classList.add('slideOutLeft');
-            setTimeout(()=>{
-                this.modalContent2.classList.add('hidden');
-                this.modalContent1.classList.add('slideInRight');
-                this.modalContent1.classList.remove('zoomOutRight','hidden');
-            }, 500);
-            this.name = '';
+            this.$store.commit('moveModalBackToOrigin', [this.returnById('modal-content1'), this.returnById('modal-content2')])
         },
         getResultValue(result) {
-            this.label = result.label;
-            this.local = result.bounds;
-            this.label = result.label;
-            return result.label;
-        },
+            this.$store.commit('getPointUpdateData', result)
+            return result.label
+        },       
     }
 };
 </script>

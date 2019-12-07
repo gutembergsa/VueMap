@@ -7,7 +7,7 @@
                         <p>
                             <figure class="media-left">
                                 <p class="image is-96x96 center">
-                                    <img class="is-rounded" src="../../public/img/foto.jpg">
+                                    <img class="is-rounded" src="../../../public/img/foto.jpg">
                                 </p>
                             </figure>
                             <label class=" label is-size-6 fottxt center">Gutemberg Sá</label>
@@ -23,7 +23,7 @@
                             <span class="icon">
                                 <i class="fas fa-at"></i>
                             </span>
-                            <span>gutemberg.silvasa@outloook.com</span>
+                            <span class="is-size-6">gutemberg.silvasa@outloook.com</span>
                             <br>                                             
                             <span class="icon">
                                 <i class="fab fa-whatsapp"></i>
@@ -35,7 +35,7 @@
             </article>            
         </div>
         <div id="footerContent2" class="section animated fadeIn">
-            <div class="content">
+            <div class="content has-text-justified">
                 <p>
                     <label class="label fottxt center is-size-4">VueMAP</label>
                     <br>
@@ -55,22 +55,22 @@
                 <div class="colums">
                     <div class="column is-paddingless">
                         <figure class="image is-96x96 center">
-                            <img src="../../public/img/animate-logo.png">
+                            <img src="../../../public/img/animate-logo.png">
                         </figure>
                     </div>
                     <div class="column is-paddingless">
                         <figure class="image is-96x96 center">
-                            <img src="../../public/img/vue-logo.png">
+                            <img src="../../../public/img/vue-logo.png">
                         </figure>
                     </div>
                     <div class="column is-paddingless space1">
                         <figure class="image is-96x96 center">
-                            <img src="../../public/img/bulma-logo.png">
+                            <img src="../../../public/img/bulma-logo.png">
                         </figure>
                     </div>
                     <div class="column is-paddingless space2">
                         <figure class="image is-96x96 center">
-                            <img src="../../public/img/indexeddb-logo.png">
+                            <img src="../../../public/img/indexeddb-logo.png">
                         </figure>
                     </div>
                 </div>
@@ -143,63 +143,22 @@ export default {
         return{
             flag: window.screen.width <= 425 ? false : true,
             flag2: 1,
-            flag3: null,
-            elemList: []
         }
     },
     mounted(){
-        this.elemList = [document.getElementById('footerContent1'),
-                        document.getElementById('footerContent2'),
-                        document.getElementById('footerContent3')];
+        this.elemList = [this.returnById('footerContent1'),
+                this.returnById('footerContent2'),
+                this.returnById('footerContent3')];
 
-        window.addEventListener('resize', ()=> {
-            if (window.screen.width <= 425) {
-                this.flag = false;
-            } else {
-                this.flag = true;
-            }
-
-            if (window.screen.width <= 768) {
-                console.log('1');
-                this.flag3 = false;
-            } else {
-                console.log('2');
-                this.flag3 = true;
-            }
-        });
+        window.onresize = size => this.$store.dispatch('triggerResponsividade', size.currentTarget.innerWidt)
     },
     methods:{
         switchFooter(flag){
             this.flag2 = flag;
-            if (this.flag2 === 0) {
-                this.fade(this.elemList, 0, 1, 2); 
-            }
-            else if(this.flag2 === 1){
-                this.fade(this.elemList, 1, 0, 2); 
-            }
-            else if(this.flag2 === 2){
-                this.fade(this.elemList, 2, 0, 1); 
-            }
-        },
-        fade(aux, el, op1, op2){
-                if (aux[op1].classList.contains('fadeIn')) {
-                    aux[op1].classList.remove('fadeIn')
-                    aux[op1].classList.add('fadeOut')
-                    setTimeout(() => {
-                        aux[op1].classList.add('is-hidden')
-                        aux[el].classList.remove('is-hidden', 'fadeOut')
-                        aux[el].classList.add('fadeIn')
-                    }, 1000);
-                }
-                if (aux[op2].classList.contains('fadeIn')) {
-                    aux[op2].classList.add('fadeOut')
-                    setTimeout(() => {
-                        aux[op2].classList.add('is-hidden')
-                        aux[el].classList.remove('is-hidden', 'fadeOut')
-                        aux[el].classList.add('fadeIn')
-                    }, 1000);
-                }
-
+            
+            if (this.flag2 === 0) this.$store.commit('fadeFooter', [this.elemList, 0, 1, 2]) 
+            else if(this.flag2 === 1) this.$store.commit('fadeFooter', [this.elemList, 1, 0, 2])  
+            else if(this.flag2 === 2) this.$store.commit('fadeFooter', [this.elemList, 2, 0, 1]) 
         }
     }
 }

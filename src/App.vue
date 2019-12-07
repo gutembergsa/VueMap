@@ -1,37 +1,22 @@
 <template>
   <div>
-    <Database/>
     <Navbar class="is-marginless"/>
-    <addHome/>
-    <Buttonbox/>
-    <Notification/>
-    <Article/>
+    <Body/>
     <Footer/>
   </div>
 </template>
 
 <script>
-import Navbar from './components/Navbar';
-import Article from './components/Article';
-import Buttonbox from './components/Buttonbox';
-import Notification from './components/Notification';
-import addHome from './components/addHome';
-import Footer from './components/Footer';
-import Database from './components/Database';
-import { setTimeout } from 'timers';
+import Navbar from './components/AppRoot/Navbar';
+import Body from './components/AppRoot/Body';
+import Footer from './components/AppRoot/Footer';
 
 export default {
-  name: 'app',
-  mounted(){
-  },
+  name: 'App',
   components:{
     Navbar,
-    Notification,
-    Buttonbox,
-    addHome,
-    Article,
+    Body,
     Footer,
-    Database
   }
 }
 </script>

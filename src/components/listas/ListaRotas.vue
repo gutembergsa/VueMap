@@ -1,11 +1,11 @@
 <template>
-    <nav class="panel p" id="alvo">
+    <nav class="panel p" id="alvo"> 
         <div class="container" id="lista">
             <p class="panel-heading nobotborder">
                 Rotas que você marcou...
             </p>
             <ul v-if="this.flag">
-                <li v-for="value in this.values" v-bind:value="value">
+                <li v-for="value in this.values" :key="`${value.label[0]}, ${value.label[1]}`">
                     <a class="panel-block puttopborder" :class="{'is-active': value.selected, 'change3': value.selected, 'change2': !value.selected}">
                         <article class="media extend ">
                             <div class="media-content">
@@ -49,7 +49,7 @@
                         </article>
                     </a>                
                 </li>
-            </ul>
+            </ul>         
             <div v-else>
                 <p class="panel-heading extend">
                     Você não tem rotas salvas
@@ -66,24 +66,24 @@
                 </button>
             </div>
         </div>
-        <Modal3/>
+        <EditRouteCardsModal/>
     </nav>
 </template>
 
 <script>
-import Notification from './Notification';
-import Database from './Database';
-import Modal3 from './Modal3';
+import Notification from '../commons/Notification';
+import EditRouteCardsModal from '../modals/EditRouteCardsModal';
 import { setTimeout } from 'timers';
+import {dbConn} from '../../Database';
+
 export default {
     name: 'ListaRotas',
     components:{
-        Modal3
+        EditRouteCardsModal
     },
     data(){
         return{
             values: [],
-            clicks: [],
             flag: false,
             flag2: false,
             time: 5
@@ -91,84 +91,72 @@ export default {
     },
     mounted(){
         this.list();
-        document.getElementById('save-rota').addEventListener('click', ()=>{
-            this.list();
-        })
-        document.getElementById('save-rota2').addEventListener('click', ()=>{
-            this.list();
-        })
-    },
-    props:{
-        value: Object
+
+        window.teste.$on('updateRouteList', () => this.list())
+
+        // document.getElementById('save-rota').addEventListener('click', ()=>{
+        //     this.list();
+        // })
     },
     methods:{
         select(value){
-            console.log(value)
-            let aux = document.getElementById('locate3');
-            let instructions = document.getElementById('instructions');
-            this.reselect()
-            if (value.selected) {
-                aux.classList.add('change2');
-                aux.classList.remove('change3', 'has-text-light');
-                value.selected = false;
-                localStorage.removeItem('selected2'); 
-                localStorage.removeItem('instructions'); 
-                instructions.classList.add('hide');
-                setTimeout(() => {
-                    instructions.classList.remove('show');
-                    instructions.classList.add('is-hidden');
-                }, 100);
-            } else {
-                localStorage.instructions = 'Aguardando a geolocalização...'
-                aux.classList.add('change3', 'has-text-light');
-                aux.classList.remove('change2');
-                value.selected = true;   
-                localStorage.selected2 = JSON.stringify(value); 
-            }
-            Database.methods.updateItem('rotas', [value]);
-            this.list();
-        },
-        reselect(){
-            if (localStorage.selected2) {
-                let aux = JSON.parse(localStorage.selected2);
-                if (aux || aux.selected === false) {
-                    aux.selected = false;
-                    Database.methods.updateItem('rotas', [aux]);                
-                }                
-            }
-        },
-        list(value = []){
-            let db = window.indexedDB.open('vuemap', 2);
-            db.onsuccess = function(event) {
-                let getTransaction = this.result
-                                        .transaction('rotas', "readwrite")
-                                        .objectStore('rotas')
-                                        .getAll();
-                getTransaction.onsuccess = async function(event){
-                    value = await JSON.stringify(this.result)
-                };
-            };
-            setTimeout(()=>{
-                if(JSON.parse(value).length){
-                    this.flag = true
-                    this.values = JSON.parse(value)
-                }else{
-                    this.flag = false
+            // let aux = document.getElementById('locate3');
+            // let instructions = document.getElementById('instructions');
+            // this.reselect()
+            // if (value.selected) {
+            //     aux.classList.add('change2');
+            //     aux.classList.remove('change3', 'has-text-light');
+            //     value.selected = false;
+            //     localStorage.removeItem('selected2'); 
+            //     localStorage.removeItem('instructions'); 
+            //     instructions.classList.add('hide');
+            //     setTimeout(() => {
+            //         instructions.classList.remove('show');
+            //         instructions.classList.add('is-hidden');
+            //     }, 100);
+            // } else {
+            //     localStorage.instructions = 'Aguardando a geolocalização...'
+            //     aux.classList.add('change3', 'has-text-light');
+            //     aux.classList.remove('change2');
+            //     value.selected = true;   
+            //     localStorage.selected2 = JSON.stringify(value); 
+            // }
+            // Database.methods.updateItem('rotas', [value]);
+            //this.list();
+            dbConn.getSelectedCard('rotas').then(result => {
+                if (result) {
+                    result.selected = false;            
+                    dbConn.updateData(result, 'rotas')                    
                 }
-            }, 500)
+                this.$store.commit('selectRouteCard', [this.returnById('locate3'), this.returnById('instructions'), value])
+                this.list()            
+            })            
+        },
+
+        list(){
+            dbConn.getAllData('rotas').then(result => {
+                if (result.length > 0) {
+                    this.flag = true
+                    this.values =  result
+                }
+                else this.flag = false
+            })
         },
         remove(value){
-            let aux = document.getElementById('locate3');
-            if (value.selected === true) {
-                aux.classList.add('change2');
-                aux.classList.remove('change3', 'has-text-light');
-                localStorage.removeItem('selected2'); 
-                localStorage.removeItem('instructions'); 
-            }
-            Database.methods.removeItem('rotas', value.label);
-            Notification.methods.notificate('Rota deletada');
-            this.list();
-       },
+            // let aux = document.getElementById('locate3');
+            // if (value.selected === true) {
+            //     aux.classList.add('change2');
+            //     aux.classList.remove('change3', 'has-text-light');
+            //     localStorage.removeItem('selected2'); 
+            //     localStorage.removeItem('instructions'); 
+            // }
+            // Database.methods.removeItem('rotas', value.label);
+            // Notification.methods.notificate('Rota deletada');
+            // this.list();
+            this.$store.dispatch('removeCard', [this.returnById('locate3'), value])
+            Notification.methods.notificate('Rota deletada')
+            this.list()           
+        },
         edit(value){
             if(!localStorage.tutorial2){
                 Notification.methods.notificate(`
@@ -178,12 +166,10 @@ export default {
                 `, 30000)
                 localStorage.tutorial2 = true;
             }
-            console.log(value)
-            localStorage.routValue = JSON.stringify(value); 
-            Modal3.methods.openEditModal();
+            this.$store.dispatch('openEditModal', [this.returnById('modal3'), value]) 
         },
         reset(){
-            let aux = document.getElementById('locate3');
+            //let aux = document.getElementById('locate3');
 
             if (this.flag2) {
                 this.flag2 = false;
@@ -197,11 +183,12 @@ export default {
                 this.time--;
                 if (this.time < 1) {
                     if (this.flag2) {
-                        aux.classList.add('change2');
-                        aux.classList.remove('change3', 'has-text-light');
-                        localStorage.removeItem('selected2'); 
-                        localStorage.removeItem('instructions'); 
-                        Database.methods.clearList('rotas')
+                        // aux.classList.add('change2');
+                        // aux.classList.remove('change3', 'has-text-light');
+                        // localStorage.removeItem('selected2'); 
+                        // localStorage.removeItem('instructions'); 
+                        // Database.methods.clearList('rotas')
+                        this.$store.dispatch('clearList', [this.returnById('locate3'), false]) 
                         Notification.methods.notificate('Lista Resetada');
                         this.list();                        
                     }

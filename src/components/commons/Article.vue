@@ -33,8 +33,8 @@
 
 <script>
 import Mapa from './Map'
-import Listapontos from './Listapontos'
-import ListaRotas from './ListaRotas'
+import Listapontos from '../listas/Listapontos'
+import ListaRotas from '../listas/ListaRotas'
 
 export default {
     name: 'Article',
@@ -44,29 +44,15 @@ export default {
         ListaRotas
     },
     mounted(){
-        this.viewToggle();
+        this.returnById('mapa').addEventListener('click', ()=> this.flag = 0)
+        this.returnById('pontos').addEventListener('click', ()=>this.flag = 1)
+        this.returnById('rotas').addEventListener('click', ()=> this.flag = 2)
     },
     data(){
         return{
             flag: 0
         }
     },
-    methods:{
-        viewToggle(){
-            const mapbtn = document.getElementById('mapa');
-            const pntbtn = document.getElementById('pontos');
-            const rtbtn = document.getElementById('rotas');
-            mapbtn.addEventListener('click', ()=>{
-                this.flag = 0;
-            });
-            pntbtn.addEventListener('click', ()=>{
-                this.flag = 1;
-            });
-            rtbtn.addEventListener('click', ()=>{
-                this.flag = 2;
-            });
-        }
-    }
 }
 </script>
 

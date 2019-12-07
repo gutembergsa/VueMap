@@ -40,90 +40,43 @@
 <script>
 import { setTimeout } from 'timers';
 import Autocomplete from '@trevoreyre/autocomplete-vue';
-import Notification from './Notification';
-import validation from '../validation.js';
-import Database from './Database';
-import { BingProvider} from 'leaflet-geosearch';
+import Notification from '../commons/Notification';
+import validation from '../../validation.js';
+import {dbConn} from '../../Database';
 import '@trevoreyre/autocomplete-vue/dist/style.css';
 
 export default {
-    name: 'Modal3',
+    name: 'EditRouteCardsModal',
     components:{
         Autocomplete,
     },
     data(){
         return{
-            provider: new BingProvider({ params: { key: 'AghuzeeA1vtDHzQVX7hOoRWJ56ASwXHZ5yQi3AR_M3p1WED9B21cJ8RA5PuIm5Cy'}}),
             name: '',   
-            local: [],
-            partida: [],
-            chegada: [],
-            //label: ['', ''],
             field: 'Atualize a rota',
             value: null,
-            aux: []
         }
     },
     methods:{
-        openEditModal(){ 
-            let aux = document.getElementById('modal3');
-            aux.classList.remove('fadeOut');
-            aux.classList.add('is-active', 'fadeIn');
-        },
         closeEditModal(){
-            let close_btn = document.getElementById('modal3');
-            close_btn.classList.add('fadeOut');
-            setTimeout(()=>{
-                if (close_btn) {
-                    close_btn.classList.remove('is-active', 'fadeIn');
-                }
-            },300);
+            this.$store.dispatch('closeEditModal', this.returnById('modal3')) 
         },
         async search(event){
-            return new Promise(resolve => resolve(this.provider.search({ query: event ? event : 'campos'}))).then(result=> result);            
+            return new Promise(resolve => resolve(this.$data.mapProvider.search({ query: event ? event : ''})));            
         },
         update(e){
             e.preventDefault();
-            this.value = JSON.parse(localStorage.routValue);
-            localStorage.removeItem('routValue');
-            if(this.aux[0] !== undefined || this.aux[1]  !== undefined){
-                Database.methods.removeItem('rotas', [this.value.label[0], this.value.label[1]]);
-                this.value.label[0] = (this.aux[0] !== undefined ? this.aux[0] : this.value.label[0]);  
-                this.value.label[1] = (this.aux[1] !== undefined ? this.aux[1] : this.value.label[1]);
-            }
-            let aux = {
-                label: this.value.label,
-                nome: this.name ? this.name : this.value.nome,
-                partida: this.partida.length > 0 ? this.partida : this.value.partida,
-                chegada: this.chegada.length > 0 ? this.chegada : this.value.chegada,
-                selected: this.value.selected
-            }
-            if (this.value.selected) {
-                localStorage.selected2 = JSON.stringify(aux);
-            }
-            Database.methods.updateItem('rotas', [aux]);
+            this.$store.dispatch('updateSelectedRouteCard', this.name) 
             Notification.methods.notificate('Rota foi atualizada');                
-            this.field = 'Atualize a rota';
             this.name = '';
-            this.closingContent();
-        },
-        closingContent(){
-            const close = document.getElementById('modal3');
-            close.classList.add('fadeOut');
-            setTimeout(()=>{
-                close.classList.add('hidden');   
-            },300);
+            this.$store.dispatch('closeEditModal', this.returnById('modal3'))
         },
         getResultValue1(result) {
-            this.aux[0] = result.label;
-            //this.label[0] = result.label;
-            this.partida = result.bounds;
+            this.$store.commit('getRouteUpdateData1', result)
             return result.label;                
         },
         getResultValue2(result) {
-            this.aux[1] = result.label;
-            //this.label[1] = result.label;
-            this.chegada = result.bounds;
+            this.$store.commit('getRouteUpdateData2', result)
             return result.label;                
         },
     }

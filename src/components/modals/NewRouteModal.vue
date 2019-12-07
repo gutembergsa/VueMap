@@ -1,6 +1,5 @@
 <template>
 <div class="box form1 is-paddingless nav">
-    <Database/>
     <div class="column has-background-info nav has-text-left">
         <span class="icon" id="backleft" @click="[goBackLeft(), resetMenu()]">
             <i class="fas fa-angle-left"></i>
@@ -40,83 +39,68 @@
 <script>
 import Autocomplete from '@trevoreyre/autocomplete-vue'
 import '@trevoreyre/autocomplete-vue/dist/style.css'
-import validation from '../validation.js';
-import { BingProvider} from 'leaflet-geosearch';
-import Notification from './Notification';
-import Database from './Database';
+import validation from '../../validation.js'
+import Notification from '../commons/Notification'
+import { dbConn } from '../../Database'
+
 
 export default {
-    name: 'modalRoutForm',
+    name: 'NewRouteModal',
     components:{
-        Database,
         Autocomplete
     },
     data(){
         return{
             txt1: 'Adicione o ponto de partida',
             txt2: 'Criar rota',
-            provider: new BingProvider({ params: { key: 'AghuzeeA1vtDHzQVX7hOoRWJ56ASwXHZ5yQi3AR_M3p1WED9B21cJ8RA5PuIm5Cy'}}),
             name: '',   
-            partida:[],
-            chegada: [],
             flag: true, 
-            flag2: true, 
-            label: [],
         }
     },
-    mounted(){
-        this.article = document.getElementById('article');
-        this.modalContent1 = document.getElementById('modal-content1');
-        this.modalContent3 = document.getElementById('modal-content3');
-    },
+
     methods:{
         async search(event){
-            return new Promise(resolve => resolve(this.provider.search({ query: event ? event : 'campos'}))).then(result=> result);            
+            return new Promise(resolve => resolve(this.$data.mapProvider.search({ query: event ? event : ''})))//.then(result=> result)            
         },
         save(event){
-            event.preventDefault();
+            event.preventDefault()
             let aux = {
                 nome: this.name,
-                label: this.label,
-                partida: this.partida,
-                chegada: this.chegada,
+                label: [this.$store.state.dataToEditRoute[0].label, this.$store.state.dataToEditRoute[1].label],
+                partida: this.$store.state.dataToEditRoute[0].bounds,
+                chegada: this.$store.state.dataToEditRoute[1].bounds,
                 selected: false
-            };
+            }
+            
             if (!validation.checkEmpty2(aux)) {
-                Notification.methods.notificate('Preencha todos os campos');
+                Notification.methods.notificate('Preencha todos os campos')
             }
             else{
-                Notification.methods.notificate('Rota foi salva');   
-                Database.methods.addItem('rotas', [aux]);
-                this.$emit('closeEvt');
-                this.name = '';
+                Notification.methods.notificate('Rota foi salva')   
+                dbConn.addData(aux, 'rotas')
+                this.name = ''
+                this.$emit('closeEvt')
+                window.teste.$emit('updateRouteList')
             }
         },
         resetMenu(){
-            this.flag = true;
-            this.name = '';
-            this.txt1 = "Adicione o ponto de partida";
+            this.flag = true
+            this.name = ''
+            this.txt1 = "Adicione o ponto de partida"
         },
         goBackLeft(){
-            this.modalContent3.classList.add('slideOutRight');
-            setTimeout(()=>{
-                this.modalContent3.classList.add('hidden');
-                this.modalContent1.classList.add('slideInLeft');
-                this.modalContent1.classList.remove('zoomOutLeft','hidden');
-            }, 500);
+            this.$store.commit('moveModalBackToOrigin', [this.returnById('modal-content1'), this.returnById('modal-content3')])
         },
         getResultValue1(result) {
-            this.label[0] = result.label;
-            this.partida = result.bounds;
-            return result.label;                
+            this.$store.commit('getRouteUpdateData1', result)
+            return result.label                
         },
         getResultValue2(result) {
-            this.label[1] = result.label;
-            this.chegada = result.bounds;
-            return result.label;                
-        },
+            this.$store.commit('getRouteUpdateData2', result)
+            return result.label                
+        },        
     }
-};
+}
 </script>
 
 <style scoped>

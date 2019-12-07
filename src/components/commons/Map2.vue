@@ -19,8 +19,8 @@
 
 <script>
 import L from 'leaflet';
-import Database from './Database';
-import Notification from './Notification';
+import Database from '../Database';
+import Notification from '../commons/Notification';
 import Routing from 'leaflet-routing-machine';
 import Geo from 'leaflet-geometryutil';
 import Loading from 'vue-loading-overlay';
@@ -53,6 +53,7 @@ export default {
     },
     mounted() {
         this.map = L.map('mapid').setView(([-23.2194511,-45.7856752]), 6);
+        
         navigator.geolocation.watchPosition(position => {
             this.locateMaker(position)
             this.locationPos = [position.coords.latitude, position.coords.longitude]
@@ -63,6 +64,7 @@ export default {
                     .catch(result => console.log('erro',result));              
             }
         });
+
         this.initInstructions();
 
         this.tileLayer = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
@@ -190,7 +192,6 @@ export default {
         isPointOnLine(position, rota) {
             if (this.routeFound) {
                 return new Promise((resolve, reject) => {
-                    console.log(rota, position)
                     this.checkProximity(rota, resolve, position, 4);
                     if (this.flag2 === true) {
                         this.checkProximity(rota, resolve, position, 8);                     

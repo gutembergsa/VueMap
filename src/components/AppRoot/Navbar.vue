@@ -12,9 +12,6 @@
 
 <script>
 import { setTimeout } from 'timers';
-import Vue from 'vue';
-
-Vue.prototype.janela = window.janela;
 
 export default {
   name: 'Navbar',

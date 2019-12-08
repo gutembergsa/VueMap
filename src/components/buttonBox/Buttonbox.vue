@@ -48,14 +48,11 @@ export default {
     },
     methods:{
         setFlag1(){
-
             dbConn.getSelectedCard('pontos').then(result => {
                 this.flag1 = result
             })
         },
         setFlag2(){
-)
-
             dbConn.getSelectedCard('rotas').then(result => {
                 this.flag2 = result
                 window.teste.$on('updateInstructions', ()=> this.changeText())

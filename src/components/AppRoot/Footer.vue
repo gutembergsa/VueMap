@@ -23,7 +23,7 @@
                             <span class="icon">
                                 <i class="fas fa-at"></i>
                             </span>
-                            <span class="is-size-6">gutemberg.silvasa@outloook.com</span>
+                            <span :class="{'is-size-6':!this.$store.state.mobileSize, 'is-size-7':this.$store.state.mobileSize}">gutemberg.silvasa@outloook.com</span>
                             <br>                                             
                             <span class="icon">
                                 <i class="fab fa-whatsapp"></i>

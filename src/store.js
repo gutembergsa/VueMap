@@ -8,8 +8,8 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    tabletSize: false,
-    mobileSize: false,
+    tabletSize: window.screen.width <= 768 ? true : false,
+    mobileSize: window.screen.width <= 425 ? true : false,
     selectedPoint: null,
     valuePointToEdit: null,
     dataToEditPoint: null,

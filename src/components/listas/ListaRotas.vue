@@ -91,38 +91,11 @@ export default {
     },
     mounted(){
         this.list();
-
         window.teste.$on('updateRouteList', () => this.list())
-
-        // document.getElementById('save-rota').addEventListener('click', ()=>{
-        //     this.list();
-        // })
     },
     methods:{
         select(value){
-            // let aux = document.getElementById('locate3');
-            // let instructions = document.getElementById('instructions');
-            // this.reselect()
-            // if (value.selected) {
-            //     aux.classList.add('change2');
-            //     aux.classList.remove('change3', 'has-text-light');
-            //     value.selected = false;
-            //     localStorage.removeItem('selected2'); 
-            //     localStorage.removeItem('instructions'); 
-            //     instructions.classList.add('hide');
-            //     setTimeout(() => {
-            //         instructions.classList.remove('show');
-            //         instructions.classList.add('is-hidden');
-            //     }, 100);
-            // } else {
-            //     localStorage.instructions = 'Aguardando a geolocalização...'
-            //     aux.classList.add('change3', 'has-text-light');
-            //     aux.classList.remove('change2');
-            //     value.selected = true;   
-            //     localStorage.selected2 = JSON.stringify(value); 
-            // }
-            // Database.methods.updateItem('rotas', [value]);
-            //this.list();
+
             dbConn.getSelectedCard('rotas').then(result => {
                 if (result) {
                     result.selected = false;            
@@ -143,16 +116,6 @@ export default {
             })
         },
         remove(value){
-            // let aux = document.getElementById('locate3');
-            // if (value.selected === true) {
-            //     aux.classList.add('change2');
-            //     aux.classList.remove('change3', 'has-text-light');
-            //     localStorage.removeItem('selected2'); 
-            //     localStorage.removeItem('instructions'); 
-            // }
-            // Database.methods.removeItem('rotas', value.label);
-            // Notification.methods.notificate('Rota deletada');
-            // this.list();
             this.$store.dispatch('removeCard', [this.returnById('locate3'), value])
             Notification.methods.notificate('Rota deletada')
             this.list()           
@@ -169,25 +132,17 @@ export default {
             this.$store.dispatch('openEditModal', [this.returnById('modal3'), value]) 
         },
         reset(){
-            //let aux = document.getElementById('locate3');
-
             if (this.flag2) {
                 this.flag2 = false;
                 this.time = 5;
                 clearInterval(count)                
             }
-            
             this.flag2 = !this.flag2;
             
             let count = setInterval(() => {
                 this.time--;
                 if (this.time < 1) {
                     if (this.flag2) {
-                        // aux.classList.add('change2');
-                        // aux.classList.remove('change3', 'has-text-light');
-                        // localStorage.removeItem('selected2'); 
-                        // localStorage.removeItem('instructions'); 
-                        // Database.methods.clearList('rotas')
                         this.$store.dispatch('clearList', [this.returnById('locate3'), false]) 
                         Notification.methods.notificate('Lista Resetada');
                         this.list();                        
